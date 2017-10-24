@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocelot.ConfigEditor", "src\Ocelot.ConfigEditor\Ocelot.ConfigEditor.csproj", "{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocelot.ConfigEditorUnitTests", "tests\Ocelot.ConfigEditorUnitTests\Ocelot.ConfigEditorUnitTests.csproj", "{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C838E125-3F26-4E3B-A0A4-7DE110FCEF21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E0A1D42D-9D5E-4935-B7B8-CF55D04D28C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{E77AACB9-F107-4C2F-9D9C-5DAEDFABA20B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSite", "example\TestSite\TestSite.csproj", "{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "example\docker-compose.dcproj", "{F2EDE757-49D6-4EC1-B063-C3F003C69B3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2EDE757-49D6-4EC1-B063-C3F003C69B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2EDE757-49D6-4EC1-B063-C3F003C69B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2EDE757-49D6-4EC1-B063-C3F003C69B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2EDE757-49D6-4EC1-B063-C3F003C69B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1CB8BC32-0A27-4A86-BF4D-2F7EFFD1ABB9} = {C838E125-3F26-4E3B-A0A4-7DE110FCEF21}
+		{A63F7CDF-7B5D-45E6-99F3-3B1587E93CBB} = {E0A1D42D-9D5E-4935-B7B8-CF55D04D28C0}
+		{9325C13C-13C1-4F29-9A0A-6BA3D6D3A1E7} = {E77AACB9-F107-4C2F-9D9C-5DAEDFABA20B}
+		{F2EDE757-49D6-4EC1-B063-C3F003C69B3E} = {E77AACB9-F107-4C2F-9D9C-5DAEDFABA20B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26B61BAF-1267-477A-A2E7-8C35F2E6A5DD}
+	EndGlobalSection
+EndGlobal

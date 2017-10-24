@@ -1,0 +1,235 @@
+﻿@using System.IO
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Ocelot.ConfigEditor
+@using Ocelot.ConfigEditor.Editor.Models
+@model FileReRouteViewModel
+
+<form id="form-save" asp-action="SaveReRoute" asp-route-id="@(Model.FileReRoute.GetId())" method="post">
+    @Html.AntiForgeryToken()
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Service Details
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label asp-for="FileReRoute.ServiceName"></label>
+                    <input asp-for="FileReRoute.ServiceName" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.ReRouteIsCaseSensitive"></label>
+                    <input asp-for="FileReRoute.ReRouteIsCaseSensitive" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.LoadBalancer"></label>
+                    <input asp-for="FileReRoute.LoadBalancer" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.RequestIdKey"></label>
+                    <input asp-for="FileReRoute.RequestIdKey" class="form-control"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Downstream
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label asp-for="FileReRoute.DownstreamScheme"></label>
+                    <select asp-for="FileReRoute.DownstreamScheme" asp-items="Model.SchemeListItems" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.DownstreamHost"></label>
+                    <input asp-for="FileReRoute.DownstreamHost" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.DownstreamPort"></label>
+                    <input asp-for="FileReRoute.DownstreamPort" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.DownstreamPathTemplate"></label>
+                    <input asp-for="FileReRoute.DownstreamPathTemplate" placeholder="/" class="form-control"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Upstream
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label asp-for="FileReRoute.UpstreamPathTemplate"></label>
+                    <input asp-for="FileReRoute.UpstreamPathTemplate" placeholder="/" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.UpstreamHttpMethod"></label>
+                    <select asp-for="FileReRoute.UpstreamHttpMethod" asp-items="Model.HttpMethodListItems" multiple class="form-control"></select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#panel-qos-options">QoS Options</a>
+                </h3>
+            </div>
+            <div id="panel-qos-options" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.QoSOptions.ExceptionsAllowedBeforeBreaking"></label>
+                        <input asp-for="FileReRoute.QoSOptions.ExceptionsAllowedBeforeBreaking" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.QoSOptions.DurationOfBreak"></label>
+                        <input asp-for="FileReRoute.QoSOptions.DurationOfBreak" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.QoSOptions.TimeoutValue"></label>
+                        <input asp-for="FileReRoute.QoSOptions.TimeoutValue" class="form-control"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#panel-authentication">Authentication Options</a>
+                </h3>
+            </div>
+            <div id="panel-authentication" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <a href="#" id="button-allowedscope-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    </div>
+                    <div id="allowed-scope">
+                        @for (var i = 0; i < Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count; i++)
+                        {
+                            <div class="form-group">
+                                <input asp-for="FileReRoute.AuthenticationOptions.AllowedScopes[i]"/>
+                            </div>
+                        }
+                        <input type="hidden" id="allowed-scope-index" value="@(Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count - 1)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#panel-headers">Add Headers to Request</a>
+                </h3>
+            </div>
+            <div id="panel-headers" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <a href="#" id="button-headers-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    </div>
+                    <div id="request-headers">
+                        @foreach (var key in Model.FileReRoute.AddHeadersToRequest.Keys)
+                        {
+                            <div class="form-group">
+                                <input type="text" value="@key" class="headers-key"/>
+                                <input asp-for="FileReRoute.AddHeadersToRequest[key]"/>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#panel-claims">Add Claims to Request</a>
+                </h3>
+            </div>
+            <div id="panel-claims" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <a href="#" id="button-claims-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    </div>
+                    <div id="request-claims">
+                        @foreach (var key in Model.FileReRoute.AddClaimsToRequest.Keys)
+                        {
+                            <div class="form-group">
+                                <input type="text" value="@key" class="claims-key"/>
+                                <input asp-for="FileReRoute.AddClaimsToRequest[key]"/>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#panel-queries">Add Queries to Request</a>
+                </h3>
+            </div>
+            <div id="panel-queries" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <a href="#" id="button-queries-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    </div>
+                    <div id="request-queries">
+                        @foreach (var key in Model.FileReRoute.AddQueriesToRequest.Keys)
+                        {
+                            <div class="form-group">
+                                <input type="text" value="@key" class="queries-key"/>
+                                <input asp-for="FileReRoute.AddQueriesToRequest[key]"/>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@{
+    var id = Model.FileReRoute.GetId();
+    var hasDelete = !string.IsNullOrEmpty(id);
+    if (hasDelete)
+    {
+        <form id="form-delete" asp-action="DeleteReRoute" asp-route-id="@id" method="post"></form>
+    }
+
+}
+
+<input type="button" class="btn" id="button-save" value="Save"/>
+@if (hasDelete)
+{
+    <input type="button" class="btn" id="button-delete" value="Delete"/>
+}
+
+<input type="button" class="btn" id="button-cancel" data-action="@Url.Action("Index")" value="Cancel"/>
+
+
+@*
+public FileAuthenticationOptions AuthenticationOptions { get; set; }
+public Dictionary<string, string> RouteClaimsRequirement { get; set; }
+public FileCacheOptions FileCacheOptions { get; set; }
+
+public FileRateLimitRule RateLimitOptions { get; set; }
+public FileHttpHandlerOptions HttpHandlerOptions { get; set; }
+*@
