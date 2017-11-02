@@ -23,8 +23,8 @@
             setAllowedScopeIndex(index);
             element
                 .append(
-                    `<div class="form-group"> <input type="text" id="FileReRoute_AuthenticationOptions_AllowedScopes_${
-                    index}_" name="FileReRoute.AuthenticationOptions.AllowedScopes[${index}]"
+                `<div class="form-group"> <input type="text" id="FileReRoute_AuthenticationOptions_AllowedScopes_${index}_" 
+                    name="FileReRoute.AuthenticationOptions.AllowedScopes[${index}]"
                     placeholder="Enter scope"/> <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></a></div>`);
         }
     };
@@ -34,6 +34,11 @@ $(document).ready(function() {
     $("#button-save").on("click",
         function(e) {
             $("#form-save").submit();
+        });
+
+    $("#button-delete").on("click",
+        function (e) {
+            $("#form-delete").submit();
         });
 
     $("#button-cancel").on("click",

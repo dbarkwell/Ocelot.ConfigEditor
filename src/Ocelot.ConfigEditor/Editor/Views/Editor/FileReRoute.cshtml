@@ -7,6 +7,7 @@
 
 <form id="form-save" asp-action="SaveReRoute" asp-route-id="@(Model.FileReRoute.GetId())" method="post">
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -57,6 +58,7 @@
                 <div class="form-group">
                     <label asp-for="FileReRoute.DownstreamPathTemplate"></label>
                     <input asp-for="FileReRoute.DownstreamPathTemplate" placeholder="/" class="form-control"/>
+                    <span asp-validation-for="FileReRoute.DownstreamPathTemplate"></span>
                 </div>
             </div>
         </div>
@@ -115,6 +117,11 @@
             <div id="panel-authentication" class="panel-collapse collapse">
                 <div class="panel-body">
                     <div class="form-group">
+                        <label asp-for="FileReRoute.AuthenticationOptions.Provider"></label>
+                        <input asp-for="FileReRoute.AuthenticationOptions.Provider" class="form-control" />
+                    </div>
+                    <label>Allowed Scopes</label>
+                    <div class="form-group">
                         <a href="#" id="button-allowedscope-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
                     </div>
                     <div id="allowed-scope">
@@ -125,6 +132,22 @@
                             </div>
                         }
                         <input type="hidden" id="allowed-scope-index" value="@(Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count - 1)"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ProviderRootUrl"></label>
+                        <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ProviderRootUrl" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiName"></label>
+                        <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.RequireHttps"></label>
+                        <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.RequireHttps" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiSecret"></label>
+                        <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiSecret" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -208,7 +231,7 @@
 </form>
 @{
     var id = Model.FileReRoute.GetId();
-    var hasDelete = !string.IsNullOrEmpty(id);
+    var hasDelete = id != "0";
     if (hasDelete)
     {
         <form id="form-delete" asp-action="DeleteReRoute" asp-route-id="@id" method="post"></form>

@@ -21,9 +21,8 @@ namespace Ocelot.ConfigEditor
             ViewLocationExpanderContext context,
             IEnumerable<string> viewLocations)
         {
-            string isDashboardExample;
-            if (context.Values.TryGetValue("OcelotConfigEditor", out isDashboardExample)
-                && isDashboardExample == bool.TrueString) return _preCompiledViewLocations;
+            if (context.Values.TryGetValue("OcelotConfigEditor", out string isEditor)
+                && isEditor == bool.TrueString) return _preCompiledViewLocations;
 
             return viewLocations;
         }
