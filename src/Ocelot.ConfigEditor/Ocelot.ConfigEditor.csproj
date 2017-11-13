@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
@@ -37,11 +38,21 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\site.min.css" />
+    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.eot" />
+    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.svg" />
+    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.woff" />
+    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
     <Content Remove="wwwroot\js\site.min.js" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\css\site.min.css" />
+    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
     <EmbeddedResource Include="wwwroot\js\site.min.js" />
   </ItemGroup>
 

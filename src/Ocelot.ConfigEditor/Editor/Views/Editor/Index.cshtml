@@ -3,6 +3,8 @@
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Ocelot.Configuration.File
 @using Ocelot.ConfigEditor
+@inject IReloadService ReloadService
+
 @model FileConfiguration
 
 @{
@@ -27,3 +29,20 @@
         </ul>
     </div>
 </div>
+
+@section Scripts
+{
+    @if (await ReloadService.IsReloadRequired())
+    {
+        <script type="text/javascript">
+            $.notify("There are pending configuration changes. Click to reload.", { className: "warn", autoHide: false });
+
+            $(document).on('click',
+                '.notifyjs-bootstrap-warn',
+                function() {
+                    $("#reload-form").submit();
+                });
+        </script>
+        <form id="reload-form" method="post" action="@Url.Action("Reload")"></form>
+    }
+}

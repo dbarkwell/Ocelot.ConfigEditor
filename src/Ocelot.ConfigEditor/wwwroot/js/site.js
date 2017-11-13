@@ -38,7 +38,10 @@ $(document).ready(function() {
 
     $("#button-delete").on("click",
         function (e) {
-            $("#form-delete").submit();
+            var confirm = confirm("Are you sure you want to delete this reroute?");
+            if (confirm) {
+                $("#form-delete").submit();
+            }
         });
 
     $("#button-cancel").on("click",

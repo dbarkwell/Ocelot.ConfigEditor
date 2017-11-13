@@ -1,0 +1,13 @@
+﻿@using Ocelot.ConfigEditor
+@using Ocelot.ConfigEditor.Editor.Models
+@model Ocelot.ConfigEditor.Editor.Models.FileReRouteViewModel
+
+<form id="form-save" asp-action="EditReRoute" asp-route-id="@(Model.FileReRoute.GetId())" method="post" asp-anti-forgery="true">
+@{ await Html.RenderPartialAsync("_FileReRoutePartial", Model); }
+</form>
+<form id="form-delete" asp-action="DeleteReRoute" asp-route-id="@(Model.FileReRoute.GetId())" method="post"></form>
+
+<input type="button" class="btn btn-primary" id="button-save" value="Save" />
+<input type="button" class="btn btn-secondary" id="button-delete" value="Delete" />
+<input type="button" class="btn btn-secondary" id="button-cancel" data-action="@Url.Action("Index")" value="Cancel" />
+

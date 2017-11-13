@@ -20,6 +20,11 @@ textarea { max-width: 280px; }
 
 .col-vertical-offset-2 { margin-top: 20px; }
 
+.required:after {
+    content: " *";
+    color: red;
+}
+
 /* Hide/rearrange for smaller screens */
 
 @media screen and (max-width: 767px) {

@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 
-using Ocelot.ConfigEditor;
-
-namespace Microsoft.AspNetCore.Builder
+namespace Ocelot.ConfigEditor
 {
-    public static class ConfigMiddleware
+    public static class ConfigMiddlewareExtensions
     {
         public static IServiceCollection AddOcelotConfigEditor(this IServiceCollection services)
         {
@@ -14,6 +18,8 @@ namespace Microsoft.AspNetCore.Builder
             services.Configure<RazorViewEngineOptions>(
                 opt => { opt.ViewLocationExpanders.Add(new ViewLocationMapper()); });
 
+            services.AddScoped<IReloadService, ReloadService>();
+
             return services;
         }
 
@@ -21,6 +27,10 @@ namespace Microsoft.AspNetCore.Builder
             this IApplicationBuilder app,
             ConfigEditorOptions configEditorOptions = null)
         {
+            var services = app.ApplicationServices;
+            var reload = services.GetService<IReloadService>();
+            reload.RemoveReloadFlag();
+
             var pathMatch = (configEditorOptions?.Path ?? "cfgedt").Trim('/');
 
             app.UseMvc(

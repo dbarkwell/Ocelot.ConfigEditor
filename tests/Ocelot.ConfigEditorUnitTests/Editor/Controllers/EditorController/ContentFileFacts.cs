@@ -5,6 +5,7 @@ using System.Text;
 
 using NSubstitute;
 
+using Ocelot.ConfigEditor;
 using Ocelot.ConfigEditor.Editor.Controllers;
 using Ocelot.Configuration.Repository;
 
@@ -16,15 +17,18 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
     {
         private readonly IFileConfigurationRepository _config;
 
+        private readonly IReloadService _reload;
+
         public ContentFileFacts()
         {
             _config = Substitute.For<IFileConfigurationRepository>();
+            _reload = Substitute.For<IReloadService>();
         }
 
         [Fact]
         public void WhenRequestSiteCss_ReturnCssContentType()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload);
 
             var css = controller.ContentFile("site.min.css").ContentType;
 
@@ -34,7 +38,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteCss_ReturnCssFile()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload);
 
             var fileStream = controller.ContentFile("site.min.css").FileStream;
             var css = string.Empty;
@@ -50,7 +54,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteJs_ReturnJsContentType()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload);
 
             var css = controller.ContentFile("site.min.js").ContentType;
 
@@ -60,7 +64,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteJs_ReturnJsFile()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload);
 
             var fileStream = controller.ContentFile("site.min.js").FileStream;
             var css = string.Empty;

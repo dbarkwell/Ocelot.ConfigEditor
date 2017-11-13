@@ -19,14 +19,15 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
     {
         private readonly IFileConfigurationRepository _fileConfigRepo;
 
-        private readonly IFileConfigurationSetter _configSetter;
+        private readonly IReloadService _reload;
 
-        public EditorController(IFileConfigurationRepository fileConfigurationRepository, IFileConfigurationSetter configSetter)
+        public EditorController(IFileConfigurationRepository fileConfigurationRepository, IReloadService reload)
         {
             _fileConfigRepo = fileConfigurationRepository;
-            _configSetter = configSetter;
+            _reload = reload;
         }
 
+        [NamespaceConstraint]
         public FileStreamResult ContentFile(string id)
         {
             var assembly = typeof(EditorController).GetTypeInfo().Assembly;
@@ -40,7 +41,35 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         {
             var viewModel = new FileReRouteViewModel { FileReRoute = new FileReRoute() };
 
-            return View("FileReRoute", viewModel);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NamespaceConstraint]
+        public IActionResult CreateReRoute(string id, FileReRouteViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var validator = new FileReRouteValidator();
+            var results = validator.Validate(model.FileReRoute);
+
+            if (!results.IsValid)
+            {
+                results.Errors.ToList().ForEach(e => ModelState.AddModelError($"FileReRoute.{e.PropertyName}", e.ErrorMessage));
+                return View(model);
+            }
+
+            var routes = _fileConfigRepo.Get();
+            routes.Data.ReRoutes.Add(model.FileReRoute);
+            _fileConfigRepo.Set(routes.Data);
+
+            _reload.AddReloadFlag();
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -56,7 +85,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             routes.Data.ReRoutes.Remove(route);
             _fileConfigRepo.Set(routes.Data);
 
-            Reload(routes.Data);
+            _reload.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -69,24 +98,17 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
             if (route == null) return RedirectToAction("CreateReRoute");
 
-            return View("FileReRoute", new FileReRouteViewModel { FileReRoute = route });
-        }
-
-        [NamespaceConstraint]
-        public IActionResult Index()
-        {
-            var repo = _fileConfigRepo.Get();
-            return View(repo.Data);
+            return View(new FileReRouteViewModel { FileReRoute = route });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [NamespaceConstraint]
-        public IActionResult SaveReRoute(string id, FileReRouteViewModel model)
+        public IActionResult EditReRoute(string id, FileReRouteViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View("FileReRoute", model);
+                return View(model);
             }
 
             var validator = new FileReRouteValidator();
@@ -94,8 +116,8 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
             if (!results.IsValid)
             {
-                results.Errors.ToList().ForEach(e => ModelState.AddModelError(e.PropertyName, e.ErrorMessage));
-                return View("FileReRoute", model);
+                results.Errors.ToList().ForEach(e => ModelState.AddModelError($"FileReRoute.{e.PropertyName}", e.ErrorMessage));
+                return View(model);
             }
 
             var routes = _fileConfigRepo.Get();
@@ -106,7 +128,23 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             routes.Data.ReRoutes.Add(model.FileReRoute);
             _fileConfigRepo.Set(routes.Data);
 
-            Reload(routes.Data);
+            _reload.AddReloadFlag();
+
+            return RedirectToAction("Index");
+        }
+
+        [NamespaceConstraint]
+        public IActionResult Index()
+        {
+            var repo = _fileConfigRepo.Get();
+            return View(repo.Data);
+        }
+
+        [HttpPost]
+        [NamespaceConstraint]
+        public IActionResult Reload()
+        {
+            _reload.ReloadConfig();
 
             return RedirectToAction("Index");
         }
@@ -117,12 +155,17 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
             if (fileId.EndsWith(".css")) return "text/css";
 
-            return fileId.EndsWith(".jpg") ? "image/jpeg" : "text";
-        }
+            if (fileId.EndsWith(".eot")) return "application/vnd.ms-fontobject";
 
-        private void Reload(FileConfiguration config)
-        {
-            _configSetter.Set(config);
+            if (fileId.EndsWith(".ttf")) return "application/font-sfnt";
+
+            if (fileId.EndsWith(".svg")) return "image/svg+xml";
+
+            if (fileId.EndsWith(".woff")) return "application/font-woff";
+
+            if (fileId.EndsWith(".woff2")) return "application/font-woff2";
+
+            return fileId.EndsWith(".jpg") ? "image/jpeg" : "text";
         }
     }
 }

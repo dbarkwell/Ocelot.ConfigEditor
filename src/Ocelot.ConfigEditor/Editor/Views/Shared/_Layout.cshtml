@@ -1,7 +1,9 @@
 ﻿@using System.IO
 @using Microsoft.ApplicationInsights.AspNetCore
 @using Microsoft.AspNetCore.Mvc.Razor
+@using Microsoft.AspNetCore.Mvc.Razor.Compilation
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
+
 @inject JavaScriptSnippet JavaScriptSnippet
 <!DOCTYPE html>
 <html>
@@ -12,6 +14,11 @@
 
     <environment names="Development,Staging,Production">
         <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "site.min.css" }, Context.Request.Scheme)"/>
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.eot" }, Context.Request.Scheme)" />
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.svg" }, Context.Request.Scheme)" />
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.ttf" }, Context.Request.Scheme)" />
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff" }, Context.Request.Scheme)" />
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff2" }, Context.Request.Scheme)" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
