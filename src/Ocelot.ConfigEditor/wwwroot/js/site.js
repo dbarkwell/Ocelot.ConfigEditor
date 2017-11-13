@@ -38,8 +38,8 @@ $(document).ready(function() {
 
     $("#button-delete").on("click",
         function (e) {
-            var confirm = confirm("Are you sure you want to delete this reroute?");
-            if (confirm) {
+            var result = confirm("Are you sure you want to delete this reroute?");
+            if (result) {
                 $("#form-delete").submit();
             }
         });
