@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.0</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>f2ede757-49d6-4ec1-b063-c3f003c69b3e</ProjectGuid>
+    <ProjectGuid>678e3d0d-af9e-4058-81f1-b3e52e508ef0</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>testsite</DockerServiceName>

@@ -15,6 +15,8 @@ using Ocelot.ConfigEditor;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
+using SQLitePCL;
+
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace TestSite
@@ -25,10 +27,11 @@ namespace TestSite
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile("configuration.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("configuration.json")
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -48,12 +51,12 @@ namespace TestSite
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                loggerFactory.AddDebug();
             }
             else
             {

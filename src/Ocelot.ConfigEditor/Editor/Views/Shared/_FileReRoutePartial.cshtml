@@ -119,8 +119,8 @@
         <div id="panel-authentication" class="panel-collapse collapse">
             <div class="panel-body">
                 <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.Provider"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.Provider" class="form-control" />
+                    <label asp-for="FileReRoute.AuthenticationOptions.AuthenticationProviderKey"></label>
+                    <input asp-for="FileReRoute.AuthenticationOptions.AuthenticationProviderKey" class="form-control" />
                 </div>
                 <label>Allowed Scopes</label>
                 <div class="form-group">
@@ -134,32 +134,6 @@
                         </div>
                     }
                     <input type="hidden" id="allowed-scope-index" value="@(Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count - 1)"/>
-                </div>
-                <label>Identity Server Config</label>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ProviderRootUrl"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ProviderRootUrl" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiName"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiName" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.RequireHttps"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.RequireHttps" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiSecret"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.IdentityServerConfig.ApiSecret" class="form-control" />
-                </div>
-                <label>Jwt Config</label>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.JwtConfig.Audience"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.JwtConfig.Audience" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="FileReRoute.AuthenticationOptions.JwtConfig.Authority"></label>
-                    <input asp-for="FileReRoute.AuthenticationOptions.JwtConfig.Authority" class="form-control" />
                 </div>
             </div>
         </div>
