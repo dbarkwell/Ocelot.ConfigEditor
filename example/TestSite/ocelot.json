@@ -1,0 +1,21 @@
+{
+  "ReRoutes": [
+    {
+      "UpstreamPathTemplate": "/cbc",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamPathTemplate": "/lineup/canada.xml",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "rss.cbc.ca",
+          "Port": 80
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost"
+  }
+}

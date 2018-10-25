@@ -1,32 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using System.IO;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
+using Ocelot.ConfigEditor;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 namespace TestSite
 {
-    public class Program
+    public class TestSite
     {
         public static void Main(string[] args)
         {
-            IWebHostBuilder builder = new WebHostBuilder();
-
-            builder.ConfigureServices(s => { s.AddSingleton(builder); });
-
-            var host = builder.UseKestrel()
+            new WebHostBuilder()
+                .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .UseApplicationInsights()
-                .Build();
-
-            host.Run();
+                .ConfigureAppConfiguration(
+                    (hostingContext, config) =>
+                    {
+                        config
+                            .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+                            .AddJsonFile("appsettings.json", true, true)
+                            .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+                            .AddJsonFile("ocelot.json")
+                            .AddEnvironmentVariables();
+                    })
+                .ConfigureServices(s =>
+                    {
+                        s.AddOcelot();
+                        s.AddOcelotConfigEditor();
+                    })
+                .ConfigureLogging((hostingContext, logging) =>
+                    {
+                        //add your logging
+                    })
+                .UseIISIntegration().Configure(app =>
+                    {
+                        app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" });
+                        app.UseOcelot().Wait();
+                    })
+                .Build()
+                .Run();
         }
     }
 }
