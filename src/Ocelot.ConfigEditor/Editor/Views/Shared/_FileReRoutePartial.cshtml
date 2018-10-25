@@ -5,7 +5,6 @@
 @using Ocelot.ConfigEditor.Editor.Models
 @model FileReRouteViewModel
 
-
 <div class="panel-group">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -17,16 +16,13 @@
             <div class="form-group">
                 <label asp-for="FileReRoute.ServiceName"></label>
                 <input asp-for="FileReRoute.ServiceName" class="form-control"/>
-                <span asp-validation-for="FileReRoute.ServiceName"></span>
+                <span asp-validation-for="FileReRoute.ServiceName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FileReRoute.ReRouteIsCaseSensitive"></label>
                 <input asp-for="FileReRoute.ReRouteIsCaseSensitive" class="form-control"/>
             </div>
-            <div class="form-group">
-                <label asp-for="FileReRoute.LoadBalancer"></label>
-                <input asp-for="FileReRoute.LoadBalancer" class="form-control"/>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="FileReRoute.RequestIdKey"></label>
                 <input asp-for="FileReRoute.RequestIdKey" class="form-control"/>
@@ -48,15 +44,25 @@
                 <span asp-validation-for="FileReRoute.DownstreamScheme" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FileReRoute.DownstreamHost" class="required"></label>
-                <input asp-for="FileReRoute.DownstreamHost" class="form-control"/>
-                <span asp-validation-for="FileReRoute.DownstreamHost" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FileReRoute.DownstreamPort" class="required"></label>
-                <input asp-for="FileReRoute.DownstreamPort" class="form-control"/>
-                <span asp-validation-for="FileReRoute.DownstreamPort" class="text-danger"></span>
-            </div>
+                <label class="required">Host and Port</label>
+                <span asp-validation-for="FileReRoute.DownstreamHostAndPorts" class="text-danger"></span>
+                <div class="form-group">
+                    <a href="#" id="button-hostport-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                </div>
+                <div id="host-port" class="form-group">
+                    @for (var i = 0; i < Model.FileReRoute.DownstreamHostAndPorts.Count; i++)
+                    {
+                        <div class="form-group">
+                            <input asp-for="FileReRoute.DownstreamHostAndPorts[i].Host" class="required"/>
+                            <input asp-for="FileReRoute.DownstreamHostAndPorts[i].Port" class="required"/>
+                            <a href="#" class="btn btn-xs btn-default textbox-remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                        </div>
+                    }
+                    <input type="hidden" id="host-port-index" value="@(Model.FileReRoute.DownstreamHostAndPorts.Count)"/>
+                </div>
+            </div> 
             <div class="form-group">
                 <label asp-for="FileReRoute.DownstreamPathTemplate" class="required"></label>
                 <input asp-for="FileReRoute.DownstreamPathTemplate" placeholder="/" class="form-control"/>
@@ -133,7 +139,7 @@
                             <input asp-for="FileReRoute.AuthenticationOptions.AllowedScopes[i]"/>
                         </div>
                     }
-                    <input type="hidden" id="allowed-scope-index" value="@(Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count - 1)"/>
+                    <input type="hidden" id="allowed-scope-index" value="@(Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count)"/>
                 </div>
             </div>
         </div>
@@ -182,6 +188,9 @@
                         <div class="form-group">
                             <input type="text" value="@key" class="claims-key"/>
                             <input asp-for="FileReRoute.AddClaimsToRequest[key]"/>
+                            <a href="#" class="btn btn-xs btn-default textbox-remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
                         </div>
                     }
                 </div>
@@ -209,6 +218,31 @@
                             <input asp-for="FileReRoute.AddQueriesToRequest[key]"/>
                         </div>
                     }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" href="#panel-queries">Load Balance Options</a>
+            </h3>
+        </div>
+        <div id="panel-queries" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label asp-for="FileReRoute.LoadBalancerOptions.Key"></label>
+                    <input asp-for="FileReRoute.LoadBalancerOptions.Key" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.LoadBalancerOptions.Type"></label>
+                    <input asp-for="FileReRoute.LoadBalancerOptions.Type" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileReRoute.LoadBalancerOptions.Expiry"></label>
+                    <input asp-for="FileReRoute.LoadBalancerOptions.Expiry" class="form-control"/>
                 </div>
             </div>
         </div>

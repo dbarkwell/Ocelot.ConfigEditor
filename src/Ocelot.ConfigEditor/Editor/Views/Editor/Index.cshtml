@@ -12,23 +12,32 @@
 }
 
 <div class="row">
-    <div class="col-md-3 col-vertical-offset-2">
-        <a asp-action="CreateReRoute">Create</a>
+    <div class="col-md-2 col-vertical-offset-2">
+        <a asp-action="CreateReRoute"><span class="glyphicon glyphicon-plus"></span> Create</a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-10">
         <h2>ReRoutes</h2>
         <ul>
             @foreach (var route in Model.ReRoutes)
             {
                 <li>
-                    <a asp-action="EditReRoute" asp-route-id="@route.GetId()">
-                        @($"{route.DownstreamScheme}://{route.DownstreamHost}:{route.DownstreamPort}{route.DownstreamPathTemplate}")
-                    </a>
+                    <div class="col-md-4">
+                        <a asp-action="EditReRoute" asp-route-id="@route.GetId()">
+                            <div>@($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[0].Host}:{route.DownstreamHostAndPorts[0].Port}{route.DownstreamPathTemplate}")</div>
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        @for (var i = 1; i < route.DownstreamHostAndPorts.Count; i++)
+                        {
+                            <span>@($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[i].Host}:{route.DownstreamHostAndPorts[i].Port}{route.DownstreamPathTemplate}")</span>
+                        }
+                    </div>
                 </li>
             }
         </ul>
     </div>
 </div>
+
 
 @section Scripts
 {

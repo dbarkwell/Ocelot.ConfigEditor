@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading.Tasks;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Mvc;
 
 using Ocelot.ConfigEditor.Editor.Models;
-using Ocelot.Configuration;
 using Ocelot.Configuration.File;
-using Ocelot.Configuration.Provider;
 using Ocelot.Configuration.Repository;
-using Ocelot.Configuration.Setter;
+using Ocelot.Configuration.Validator;
 
 namespace Ocelot.ConfigEditor.Editor.Controllers
 {
@@ -21,10 +18,13 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
         private readonly IReloadService _reload;
 
-        public EditorController(IFileConfigurationRepository fileConfigurationRepository, IReloadService reload)
+        private readonly IServiceProvider _serviceProvider;
+
+        public EditorController(IFileConfigurationRepository fileConfigurationRepository, IReloadService reload, IServiceProvider serviceProvider)
         {
             _fileConfigRepo = fileConfigurationRepository;
             _reload = reload;
+            _serviceProvider = serviceProvider;
         }
 
         [NamespaceConstraint]
@@ -47,27 +47,25 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [NamespaceConstraint]
-        public IActionResult CreateReRoute(string id, FileReRouteViewModel model)
+        public async Task<IActionResult> CreateReRoute(string id, FileReRouteViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var validator = new FileReRouteValidator();
-            var results = validator.Validate(model.FileReRoute);
-
+            var results = ValidateModel(model);
             if (!results.IsValid)
             {
                 results.Errors.ToList().ForEach(e => ModelState.AddModelError($"FileReRoute.{e.PropertyName}", e.ErrorMessage));
                 return View(model);
             }
 
-            var routes = _fileConfigRepo.Get();
+            var routes = await _fileConfigRepo.Get();
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            _fileConfigRepo.Set(routes.Data);
+            await _fileConfigRepo.Set(routes.Data);
 
-            _reload.AddReloadFlag();
+            await _reload.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -75,25 +73,25 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [NamespaceConstraint]
-        public IActionResult DeleteReRoute(string id)
+        public async Task<IActionResult> DeleteReRoute(string id)
         {
-            var routes = _fileConfigRepo.Get();
+            var routes = await _fileConfigRepo.Get();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("Index");
 
             routes.Data.ReRoutes.Remove(route);
-            _fileConfigRepo.Set(routes.Data);
+            await _fileConfigRepo.Set(routes.Data);
 
-            _reload.AddReloadFlag();
+            await _reload.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
 
         [NamespaceConstraint]
-        public IActionResult EditReRoute(string id)
+        public async Task<IActionResult> EditReRoute(string id)
         {
-            var routes = _fileConfigRepo.Get();
+            var routes = await _fileConfigRepo.Get();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("CreateReRoute");
@@ -104,39 +102,38 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [NamespaceConstraint]
-        public IActionResult EditReRoute(string id, FileReRouteViewModel model)
+        public async Task<IActionResult> EditReRoute(string id, FileReRouteViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var validator = new FileReRouteValidator();
-            var results = validator.Validate(model.FileReRoute);
-
+            var results = ValidateModel(model);
             if (!results.IsValid)
             {
                 results.Errors.ToList().ForEach(e => ModelState.AddModelError($"FileReRoute.{e.PropertyName}", e.ErrorMessage));
                 return View(model);
             }
 
-            var routes = _fileConfigRepo.Get();
+            var routes = await _fileConfigRepo.Get();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
-            if (route != null) routes.Data.ReRoutes.Remove(route);
+            if (route != null) 
+                routes.Data.ReRoutes.Remove(route);
 
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            _fileConfigRepo.Set(routes.Data);
-
-            _reload.AddReloadFlag();
+            var response = await _fileConfigRepo.Set(routes.Data);
+            
+            await _reload.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
 
         [NamespaceConstraint]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var repo = _fileConfigRepo.Get();
+            var repo = await _fileConfigRepo.Get();
             return View(repo.Data);
         }
 
@@ -166,6 +163,14 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             if (fileId.EndsWith(".woff2")) return "application/font-woff2";
 
             return fileId.EndsWith(".jpg") ? "image/jpeg" : "text";
+        }
+
+        private ValidationResult ValidateModel(FileReRouteViewModel model)
+        {
+            var hostAndPortValidator = new HostAndPortValidator();
+            var fileQoSValidator = new FileQoSOptionsFluentValidator(_serviceProvider);
+            var validator = new ReRouteFluentValidator(null, hostAndPortValidator, fileQoSValidator);
+            return validator.Validate(model.FileReRoute);
         }
     }
 }

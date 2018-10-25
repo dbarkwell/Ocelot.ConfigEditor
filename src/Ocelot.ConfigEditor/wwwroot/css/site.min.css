@@ -1,4 +1,4 @@
-body{padding-bottom:20px;padding-top:50px}.body-content{padding-left:15px;padding-right:15px}input,select,textarea{max-width:280px}.col-vertical-offset-2{margin-top:20px}.required:after{content:" *";color:#f00}@media screen and (max-width:767px){.carousel-caption{display:none}}
+body{padding-bottom:20px;padding-top:50px}.body-content{padding-left:15px;padding-right:15px}input,select,textarea{max-width:280px}.col-vertical-offset-2{margin-top:20px}.required:after{content:" *";color:#f00}ul{list-style-type:none}@media screen and (max-width:767px){.carousel-caption{display:none}}
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.

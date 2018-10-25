@@ -1,10 +1,9 @@
 ﻿@using System.IO
-@using Microsoft.ApplicationInsights.AspNetCore
 @using Microsoft.AspNetCore.Mvc.Razor
 @using Microsoft.AspNetCore.Mvc.Razor.Compilation
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 
-@inject JavaScriptSnippet JavaScriptSnippet
+@*@inject JavaScriptSnippet JavaScriptSnippet*@
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +19,7 @@
         <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff" }, Context.Request.Scheme)" />
         <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff2" }, Context.Request.Scheme)" />
     </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript)
+    @*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -47,7 +46,7 @@
     @RenderBody()
     <hr/>
     <footer>
-        <p>&copy; 2017 - Ocelot Configuration Editor</p>
+        <p>&copy; @DateTime.Now.Year - Ocelot Configuration Editor</p>
     </footer>
 </div>
 <environment names="Development,Staging,Production">
