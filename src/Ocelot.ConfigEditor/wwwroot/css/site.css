@@ -25,6 +25,10 @@ textarea { max-width: 280px; }
     color: red;
 }
 
+ul {
+    list-style-type: none;
+}
+
 /* Hide/rearrange for smaller screens */
 
 @media screen and (max-width: 767px) {

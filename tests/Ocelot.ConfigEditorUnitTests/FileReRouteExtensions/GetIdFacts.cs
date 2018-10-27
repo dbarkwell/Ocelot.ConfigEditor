@@ -1,6 +1,6 @@
 ﻿using Ocelot.ConfigEditor;
 using Ocelot.Configuration.File;
-
+using System.Collections.Generic;
 using Xunit;
 
 namespace Ocelot.ConfigEditorUnitTests.FileReRouteExtensions
@@ -11,12 +11,11 @@ namespace Ocelot.ConfigEditorUnitTests.FileReRouteExtensions
         public void WhenGivenFileReRoute_ReturnId()
         {
             var fileReRoute = new FileReRoute
-                                  {
-                                      DownstreamScheme = "http",
-                                      DownstreamHost = "localhost",
-                                      DownstreamPort = 80,
-                                      DownstreamPathTemplate = "/test"
-                                  };
+                {
+                     DownstreamScheme = "http",
+                     DownstreamHostAndPorts = new List<FileHostAndPort> { new FileHostAndPort { Host = "localhost", Port = 80 } },
+                     DownstreamPathTemplate = "/test"
+                };
 
             var id = fileReRoute.GetId();
 
@@ -37,11 +36,11 @@ namespace Ocelot.ConfigEditorUnitTests.FileReRouteExtensions
         public void WhenMissingPortInFileReRoute_Return0Port()
         {
             var fileReRoute = new FileReRoute
-                                  {
-                                      DownstreamScheme = "http",
-                                      DownstreamHost = "localhost",
-                                      DownstreamPathTemplate = "/test"
-                                  };
+                {
+                    DownstreamScheme = "http",
+                    DownstreamHostAndPorts = new List<FileHostAndPort> { new FileHostAndPort { Host = "localhost" } },
+                    DownstreamPathTemplate = "/test"
+                };
 
             var id = fileReRoute.GetId();
 

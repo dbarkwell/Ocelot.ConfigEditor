@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
 
-using Ocelot.Configuration.File;
 using Ocelot.Configuration.Repository;
 using Ocelot.Configuration.Setter;
 
@@ -30,10 +26,10 @@ namespace Ocelot.ConfigEditor
         public async Task ReloadConfig()
         {
             await Task.Run(
-                () =>
+                async () =>
                     {
-                        var config = _fileConfigRepo.Get();
-                        _configSetter.Set(config.Data);
+                        var config = await _fileConfigRepo.Get();
+                        await _configSetter.Set(config.Data);
                     });
 
             await RemoveReloadFlag();

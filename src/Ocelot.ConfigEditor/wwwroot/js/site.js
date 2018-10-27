@@ -1,12 +1,10 @@
 ﻿var configEditor = (function() {
-    function getAllowedScopeIndex() {
-        return parseInt($("#allowed-scope-index").val());
+    
+    function getIndexValue(index) {
+        const self = $("#" + index);
+        return parseInt($(self).val());
     }
-
-    function setAllowedScopeIndex(value) {
-        $("#allowed-scope-index").val(value);
-    }
-
+    
     return {
         setKeyValuePair: function(element, id, name) {
             element.next().attr("id", `${id}_${$(element).val()}_`)
@@ -15,17 +13,50 @@
         appendRequestTextBox: function(element, className) {
             element
                 .append(
-                    `<div class="form-group"> <input type="text" placeholder="Enter header key" class="${className}
-                    "/> <input type="text" placeholder="Enter header value"/> <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></a></div>`);
+                    `<div class="form-group"> 
+                    <input type="text" placeholder="Enter header key" class="${className}"/> 
+                    <input type="text" placeholder="Enter header value"/> 
+                    <a href="#" class="btn btn-xs btn-default textbox-remove">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                    </div>`);
         },
         appendScopeTextBox: function(element) {
-            var index = getAllowedScopeIndex() + 1;
-            setAllowedScopeIndex(index);
+            const index = "allowed-scope-index";
+            const indexValue = getIndexValue(index);
             element
                 .append(
-                `<div class="form-group"> <input type="text" id="FileReRoute_AuthenticationOptions_AllowedScopes_${index}_" 
-                    name="FileReRoute.AuthenticationOptions.AllowedScopes[${index}]"
-                    placeholder="Enter scope"/> <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></a></div>`);
+                    `<div class="form-group"> 
+                    <input type="text" id="FileReRoute_AuthenticationOptions_AllowedScopes_${indexValue}_" name="FileReRoute.AuthenticationOptions.AllowedScopes[${indexValue}]" placeholder="Enter scope"/> 
+                    <a href="#" class="btn btn-xs btn-default textbox-remove" data-index="${index}">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                    </div>`);
+            
+            this.incrementIndex(index);
+        },
+        appendHostPortTextBox: function(element) {
+            const index = "host-port-index";
+            const indexValue = getIndexValue(index);
+            element
+                .append(
+                    `<div class="form-group">
+                    <input type="text" placeholder="Enter host" id="FileReRoute_DownstreamHostAndPorts_${indexValue}_Host" name="FileReRoute.DownstreamHostAndPorts[${indexValue}].Host"/> 
+                    <input type="text" placeholder="Enter port" id="FileReRoute_DownstreamHostAndPorts_${indexValue}_Port" name="FileReRoute.DownstreamHostAndPorts[${indexValue}].Port"/> 
+                    <a href="#" class="btn btn-xs btn-default textbox-remove" data-index="${index}">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                    </div>`);
+            
+            this.incrementIndex(index);
+        },
+        incrementIndex: function(index) {
+            const self = $("#" + index);
+            $(self).val(getIndexValue(index) + 1);
+        },
+        decrementIndex: function(index) {
+            const self = $("#" + index);
+            $(self).val(getIndexValue(index) - 1);
         }
     };
 }());
@@ -67,6 +98,16 @@ $(document).ready(function() {
             configEditor.setKeyValuePair($(this), "FileReRoute_AddQueriesToRequest", "FileReRoute.AddQueriesToRequest");
         });
 
+    $(document).on("click",
+        ".textbox-remove",
+        function(e){
+            $(this).parent().remove();
+            if ($(this).data("index").length > 0)
+                configEditor.decrementIndex($(this).data("index"));
+            
+            e.preventDefault();
+        });
+
     $("#button-headers-add").on("click",
         function(e) {
             configEditor.appendRequestTextBox($("#request-headers"), "headers-key");
@@ -89,6 +130,11 @@ $(document).ready(function() {
         function(e) {
             configEditor.appendScopeTextBox($("#allowed-scope"));
             e.preventDefault();
-        }
-    );
+        });
+    
+    $("#button-hostport-add").on("click",
+        function(e) {
+            configEditor.appendHostPortTextBox($("#host-port"));
+            e.preventDefault();
+        });
 });

@@ -12,23 +12,35 @@
 }
 
 <div class="row">
-    <div class="col-md-3 col-vertical-offset-2">
-        <a asp-action="CreateReRoute">Create</a>
+    <div class="col-md-2 col-vertical-offset-2">
+        <a asp-action="CreateReRoute"><span class="glyphicon glyphicon-plus"></span> Create</a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-10">
         <h2>ReRoutes</h2>
         <ul>
             @foreach (var route in Model.ReRoutes)
             {
+                var toolTip = string.Empty;
+                for (var i = 1; i < route.DownstreamHostAndPorts.Count; i++)
+                {
+                    toolTip += $"<div>{route.DownstreamHostAndPorts[i].Host}:{route.DownstreamHostAndPorts[i].Port}</div>";
+                }
                 <li>
-                    <a asp-action="EditReRoute" asp-route-id="@route.GetId()">
-                        @($"{route.DownstreamScheme}://{route.DownstreamHost}:{route.DownstreamPort}{route.DownstreamPathTemplate}")
-                    </a>
+                    <div>
+                        <a asp-action="EditReRoute" asp-route-id="@route.GetId()" >
+                            @($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[0].Host}:{route.DownstreamHostAndPorts[0].Port}{route.DownstreamPathTemplate}")
+                        </a>
+                        @if (!string.IsNullOrEmpty(toolTip))
+                        {
+                            <span class="glyphicon glyphicon-option-horizontal" data-toggle="tooltip" data-placement="right" data-html="true" title="@toolTip"></span>
+                        }
+                    </div>
                 </li>
             }
         </ul>
     </div>
 </div>
+
 
 @section Scripts
 {
@@ -42,6 +54,8 @@
                 function() {
                     $("#reload-form").submit();
                 });
+
+            $('[data-toggle="tooltip"]').tooltip();
         </script>
         <form id="reload-form" method="post" action="@Url.Action("Reload")"></form>
     }
