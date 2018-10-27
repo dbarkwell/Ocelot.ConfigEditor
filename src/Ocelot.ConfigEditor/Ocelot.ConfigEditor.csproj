@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <ApplicationIcon />
@@ -11,6 +10,16 @@
     <MvcRazorOutputPath Condition="'$(TargetFramework)'!=''">obj\precompiled\$(TargetFramework)</MvcRazorOutputPath>
     <UserSecretsId>32a6bb11-0899-4fd0-b5b5-e73cd2730701</UserSecretsId>
     <AssemblyName>Ocelot.ConfigEditor</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl />
+    <Authors>Dan Barkwell</Authors>
+    <Owners>Dan Barkwell</Owners>
+    <Description>Configuration editor for Ocelot</Description>
+    <RepositoryUrl>https://github.com/dbarkwell/Ocelot.ConfigEditor</RepositoryUrl>
+    <PackageTags>Ocelot Config Editor</PackageTags>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +33,10 @@
     <PackageReference Include="Ocelot" Version="12.0.1" />
     <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
