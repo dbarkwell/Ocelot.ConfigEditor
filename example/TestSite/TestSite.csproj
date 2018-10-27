@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ocelot.ConfigEditor\Ocelot.ConfigEditor.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="ocelot.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -37,7 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <ProjectReference Include="..\..\src\Ocelot.ConfigEditor\Ocelot.ConfigEditor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\src\Ocelot.ConfigEditor\obj\precompiled\netcoreapp2.0\Ocelot.ConfigEditor.PrecompiledViews.dll</HintPath>
     </Reference>
   </ItemGroup>
