@@ -20,16 +20,19 @@
         <ul>
             @foreach (var route in Model.ReRoutes)
             {
+                var toolTip = string.Empty;
+                for (var i = 1; i < route.DownstreamHostAndPorts.Count; i++)
+                {
+                    toolTip += $"<div>{route.DownstreamHostAndPorts[i].Host}:{route.DownstreamHostAndPorts[i].Port}</div>";
+                }
                 <li>
-                    <div class="col-md-4">
-                        <a asp-action="EditReRoute" asp-route-id="@route.GetId()">
-                            <div>@($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[0].Host}:{route.DownstreamHostAndPorts[0].Port}{route.DownstreamPathTemplate}")</div>
+                    <div>
+                        <a asp-action="EditReRoute" asp-route-id="@route.GetId()" >
+                            @($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[0].Host}:{route.DownstreamHostAndPorts[0].Port}{route.DownstreamPathTemplate}")
                         </a>
-                    </div>
-                    <div class="col-md-8">
-                        @for (var i = 1; i < route.DownstreamHostAndPorts.Count; i++)
+                        @if (!string.IsNullOrEmpty(toolTip))
                         {
-                            <span>@($"{route.DownstreamScheme}://{route.DownstreamHostAndPorts[i].Host}:{route.DownstreamHostAndPorts[i].Port}{route.DownstreamPathTemplate}")</span>
+                            <span class="glyphicon glyphicon-option-horizontal" data-toggle="tooltip" data-placement="right" data-html="true" title="@toolTip"></span>
                         }
                     </div>
                 </li>
@@ -51,6 +54,8 @@
                 function() {
                     $("#reload-form").submit();
                 });
+
+            $('[data-toggle="tooltip"]').tooltip();
         </script>
         <form id="reload-form" method="post" action="@Url.Action("Reload")"></form>
     }
