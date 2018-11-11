@@ -1,9 +1,10 @@
 ﻿using System.IO;
-
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 using Ocelot.ConfigEditor;
+using Ocelot.ConfigEditor.Security;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -19,23 +20,31 @@ namespace TestSite
                 .ConfigureAppConfiguration(
                     (hostingContext, config) =>
                     {
+                        var env = hostingContext.HostingEnvironment;
+                        
                         config
                             .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                             .AddJsonFile("appsettings.json", true, true)
                             .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
                             .AddJsonFile("ocelot.json")
                             .AddEnvironmentVariables();
+
+                        if (!env.IsDevelopment()) 
+                            return;
+                        
+                        config.AddUserSecrets<TestSite>();
                     })
-                .ConfigureServices(s =>
+                .ConfigureServices((c, s) =>
                     {
                         s.AddOcelot();
-                        s.AddOcelotConfigEditor();
+                        s.AddOcelotConfigEditor(new AzureADAuthentication(c.Configuration));
                     })
                 .ConfigureLogging((hostingContext, logging) =>
                     {
                         //add your logging
                     })
-                .UseIISIntegration().Configure(app =>
+                .UseIISIntegration()
+                .Configure(app =>
                     {
                         app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" });
                         app.UseOcelot().Wait();

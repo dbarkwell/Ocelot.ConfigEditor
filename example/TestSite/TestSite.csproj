@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>9A69CDE7-4E5A-4D03-8FCE-CAD53DFE9C51</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +40,7 @@
 
   <ItemGroup>
     <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\src\Ocelot.ConfigEditor\obj\precompiled\netcoreapp2.0\Ocelot.ConfigEditor.PrecompiledViews.dll</HintPath>
+      <HintPath>..\..\src\Ocelot.ConfigEditor\obj\precompiled\netcoreapp2.1\Ocelot.ConfigEditor.PrecompiledViews.dll</HintPath>
     </Reference>
   </ItemGroup>
 
