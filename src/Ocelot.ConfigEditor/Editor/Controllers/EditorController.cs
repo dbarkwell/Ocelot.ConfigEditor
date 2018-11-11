@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Ocelot.ConfigEditor.Editor.Models;
@@ -12,6 +14,7 @@ using Ocelot.Configuration.Validator;
 
 namespace Ocelot.ConfigEditor.Editor.Controllers
 {
+    [Authorize]
     public class EditorController : Controller
     {
         private readonly IFileConfigurationRepository _fileConfigRepo;
@@ -146,6 +149,13 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             return RedirectToAction("Index");
         }
 
+        [AllowAnonymous]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        
         private static string GetMimeType(string fileId)
         {
             if (fileId.EndsWith(".js")) return "text/javascript";
