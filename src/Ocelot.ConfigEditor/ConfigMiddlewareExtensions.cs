@@ -1,39 +1,36 @@
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Ocelot.ConfigEditor.Filters;
 using Ocelot.ConfigEditor.Security;
 
 namespace Ocelot.ConfigEditor
 {
     public static class ConfigMiddlewareExtensions
     {
-        public static IServiceCollection AddOcelotConfigEditor(this IServiceCollection services, IAuthentication auth = null)
+        public static IServiceCollection AddOcelotConfigEditor(this IServiceCollection services)
+        {
+            return services.AddOcelotConfigEditor<LocalhostAuthentication>();
+        }
+        
+        public static IServiceCollection AddOcelotConfigEditor<T>(this IServiceCollection services) where T : Security.Authentication
         {
             var authSettings = new AuthorizeSettings();
             
-            if (auth == null)
-            {
-                authSettings.Name = "LocalhostAuthorizeFilter";
-                
-                services.AddMvc(options =>
-                {
-                    var policy = new AuthorizationPolicyBuilder().RequireAssertion(context => context.HasSucceeded)
-                        .Build();
-                    options.Filters.Add(new LocalhostAuthorizeFilter(policy));
-                });
-            }
-            else
-            {
-                authSettings.Name = auth.GetType().FullName;
-                authSettings.HasAuthentication = true;
-                
-                auth.ConfigureServices(services);
-            }
+            var auth = (T)Activator.CreateInstance(
+                typeof(T), 
+                services.BuildServiceProvider().GetService<IConfiguration>());
+            
+            authSettings.Name = auth.Name;
+            authSettings.HasAuthentication = auth.EnforceHttps;
+            
+            auth.ConfigureServices(services);
+
+            services
+                .AddMvc(auth.SetupActions());
 
             services.AddSingleton(authSettings);
             
