@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.FileProviders;
 using Ocelot.ConfigEditor.Editor.Models;
 using Ocelot.Configuration.File;
 using Ocelot.Configuration.Repository;
@@ -23,11 +25,18 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
         private readonly IServiceProvider _serviceProvider;
 
-        public EditorController(IFileConfigurationRepository fileConfigurationRepository, IReloadService reload, IServiceProvider serviceProvider)
+        private readonly IHostingEnvironment _env;
+        
+        public EditorController(
+            IFileConfigurationRepository fileConfigurationRepository, 
+            IReloadService reload, 
+            IServiceProvider serviceProvider, 
+            IHostingEnvironment env)
         {
             _fileConfigRepo = fileConfigurationRepository;
             _reload = reload;
             _serviceProvider = serviceProvider;
+            _env = env;
         }
 
         [NamespaceConstraint]
@@ -132,7 +141,17 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
             return RedirectToAction("Index");
         }
-
+        
+        [NamespaceConstraint]
+        public IActionResult DownloadRoutes()
+        {
+            var provider = new PhysicalFileProvider(_env.ContentRootPath);
+            var fileInfo = provider.GetFileInfo("ocelot.json");
+            var readStream = fileInfo.CreateReadStream();
+            const string mimeType = "application/text";
+            return File(readStream, mimeType, "ocelot.json");
+        }
+        
         [NamespaceConstraint]
         public async Task<IActionResult> Index()
         {
