@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\src\Ocelot.ConfigEditor\obj\precompiled\netcoreapp2.1\Ocelot.ConfigEditor.PrecompiledViews.dll</HintPath>
     </Reference>
   </ItemGroup>

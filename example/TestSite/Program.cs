@@ -34,10 +34,10 @@ namespace TestSite
                         
                         config.AddUserSecrets<TestSite>();
                     })
-                .ConfigureServices((c, s) =>
+                .ConfigureServices(s =>
                     {
                         s.AddOcelot();
-                        s.AddOcelotConfigEditor(new AzureADAuthentication(c.Configuration));
+                        s.AddOcelotConfigEditor<GoogleAuthentication>();
                     })
                 .ConfigureLogging((hostingContext, logging) =>
                     {
