@@ -1,9 +1,5 @@
-﻿@using System.IO
-@using Microsoft.AspNetCore.Mvc.Razor
-@using Microsoft.AspNetCore.Mvc.Razor.Compilation
-@using Microsoft.AspNetCore.Mvc.ViewFeatures
+﻿@using System.Security.Claims
 
-@*@inject JavaScriptSnippet JavaScriptSnippet*@
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +15,6 @@
         <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff" }, Context.Request.Scheme)" />
         <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff2" }, Context.Request.Scheme)" />
     </environment>
-    @*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -39,6 +34,12 @@
                     <a asp-area="" asp-controller="Editor" asp-action="Index">Home</a>
                 </li>
             </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>Sign out</a></li>
+                </ul>
+            }
         </div>
     </div>
 </nav>
