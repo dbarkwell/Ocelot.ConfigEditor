@@ -23,9 +23,9 @@ namespace TestSite
                         var env = hostingContext.HostingEnvironment;
                         
                         config
-                            .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+                            .SetBasePath(env.ContentRootPath)
                             .AddJsonFile("appsettings.json", true, true)
-                            .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
                             .AddJsonFile("ocelot.json")
                             .AddEnvironmentVariables();
 
