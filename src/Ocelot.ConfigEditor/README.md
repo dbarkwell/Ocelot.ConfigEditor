@@ -15,6 +15,8 @@ There are two ways to authorize access to the config editor. The authorization t
 
 ### Enable Google Authentication
 
+TBD
+
 ### Enable Open Id Connect Authentication
 
 #### Configure with Azure Active Directory
