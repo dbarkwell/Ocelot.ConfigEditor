@@ -1,4 +1,5 @@
 using System;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -18,19 +19,27 @@ namespace Ocelot.ConfigEditor
         
         public static IServiceCollection AddOcelotConfigEditor<T>(this IServiceCollection services) where T : Security.Authentication
         {
-            var authSettings = new AuthorizeSettings();
-            
             var auth = (T)Activator.CreateInstance(
                 typeof(T), 
-                services.BuildServiceProvider().GetService<IConfiguration>());
-            
-            authSettings.Name = auth.Name;
-            authSettings.HasAuthentication = auth.EnforceHttps;
-            
-            auth.ConfigureServices(services);
+                services.BuildServiceProvider().GetService<IConfiguration>(),
+                services.BuildServiceProvider().GetService<IHostingEnvironment>());
 
+            return services.AddOcelotConfigEditor(auth);
+        }
+        
+        public static IServiceCollection AddOcelotConfigEditor(this IServiceCollection services, Security.Authentication authentication)
+        {
+            var authSettings = new AuthorizeSettings
+            {
+                Name = authentication.Name,
+                HasAuthentication = authentication.EnforceHttps,
+                SignOutSchemes = authentication.SignOutSchemes
+            };
+                
+            authentication.ConfigureServices(services);
+            
             services
-                .AddMvc(auth.SetupActions());
+                .AddMvc(authentication.SetupActions());
 
             services.AddSingleton(authSettings);
             
@@ -48,6 +57,7 @@ namespace Ocelot.ConfigEditor
         {
             var services = app.ApplicationServices;
             var env = services.GetService<IHostingEnvironment>();
+            var config = services.GetService<IConfiguration>();
             
             if (env.IsDevelopment())
             {
@@ -61,8 +71,9 @@ namespace Ocelot.ConfigEditor
             
             var reload = services.GetService<IReloadService>();
             reload.RemoveReloadFlag();
-            
-            var pathMatch = (configEditorOptions?.Path ?? "cfgedt").Trim('/');
+
+            var configPath = config["OcelotConfigEditor:Path"];  
+            var pathMatch = configPath ?? (configEditorOptions?.Path ?? "cfgedt").Trim('/');
             
             var authSettings = services.GetService<AuthorizeSettings>();
             if (authSettings.HasAuthentication)

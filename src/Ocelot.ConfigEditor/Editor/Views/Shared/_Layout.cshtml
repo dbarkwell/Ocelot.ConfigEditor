@@ -36,9 +36,11 @@
             </ul>
             @if (User.Identity.IsAuthenticated)
             {
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a>Sign out</a></li>
-                </ul>
+                <form id="sign-out-form" asp-action="SignOut" method="post">
+                    <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="sign-out">Sign out</a></li>
+                    </ul>
+                </form>
             }
         </div>
     </div>

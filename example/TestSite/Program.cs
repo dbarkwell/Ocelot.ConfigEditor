@@ -26,7 +26,7 @@ namespace TestSite
                             .SetBasePath(env.ContentRootPath)
                             .AddJsonFile("appsettings.json", true, true)
                             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
-                            .AddJsonFile("ocelot.json")
+                            .AddJsonFile("ocelot.json", false, true)
                             .AddEnvironmentVariables();
 
                         if (!env.IsDevelopment()) 
@@ -37,7 +37,7 @@ namespace TestSite
                 .ConfigureServices(s =>
                     {
                         s.AddOcelot();
-                        s.AddOcelotConfigEditor<GoogleAuthentication>();
+                        s.AddOcelotConfigEditor<AzureADAuthentication>();
                     })
                 .ConfigureLogging((hostingContext, logging) =>
                     {
@@ -46,7 +46,7 @@ namespace TestSite
                 .UseIISIntegration()
                 .Configure(app =>
                     {
-                        app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" });
+                        app.UseOcelotConfigEditor();
                         app.UseOcelot().Wait();
                     })
                 .Build()

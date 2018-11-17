@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Ocelot.ConfigEditor
 {
     internal class AuthorizeSettings
@@ -15,5 +17,7 @@ namespace Ocelot.ConfigEditor
         public string Name { get; set; }
         
         public bool HasAuthentication { get; set; }
+        
+        public IEnumerable<string> SignOutSchemes { get; set; }
     }
 }

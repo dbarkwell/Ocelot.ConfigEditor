@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+
 using Ocelot.ConfigEditor.Editor.Models;
 using Ocelot.Configuration.File;
 using Ocelot.Configuration.Repository;
@@ -168,7 +171,21 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [NamespaceConstraint]
+        public async Task<IActionResult> SignOut()
+        {
+            var authSettings = _serviceProvider.GetService<AuthorizeSettings>();
+            foreach (var scheme in authSettings.SignOutSchemes)
+            {
+                await HttpContext.SignOutAsync(scheme);
+            }
+            
+            return Redirect("/");
+        }
+        
         [AllowAnonymous]
+        [NamespaceConstraint]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

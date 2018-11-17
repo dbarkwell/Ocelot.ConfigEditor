@@ -1,5 +1,7 @@
 using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +11,7 @@ namespace Ocelot.ConfigEditor.Security
 {
     public class LocalhostAuthentication : Authentication
     {
-        public LocalhostAuthentication(IConfiguration configuration) : base(configuration)
+        public LocalhostAuthentication(IConfiguration configuration, IHostingEnvironment environment) : base(configuration, environment)
         {
             EnforceHttps = false;
         }

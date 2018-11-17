@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+using Microsoft.AspNetCore.Hosting;
 using NSubstitute;
 
 using Ocelot.ConfigEditor;
@@ -21,17 +21,20 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
 
         private readonly IServiceProvider _serviceProvider;
         
+        private readonly IHostingEnvironment _env;
+        
         public ContentFileFacts()
         {
             _config = Substitute.For<IFileConfigurationRepository>();
             _reload = Substitute.For<IReloadService>();
             _serviceProvider = Substitute.For<IServiceProvider>();
+            _env = Substitute.For<IHostingEnvironment>();
         }
 
         [Fact]
         public void WhenRequestSiteCss_ReturnCssContentType()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider, _env);
 
             var css = controller.ContentFile("site.min.css").ContentType;
 
@@ -41,7 +44,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteCss_ReturnCssFile()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider, _env);
 
             var fileStream = controller.ContentFile("site.min.css").FileStream;
             var css = string.Empty;
@@ -57,7 +60,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteJs_ReturnJsContentType()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider, _env);
 
             var css = controller.ContentFile("site.min.js").ContentType;
 
@@ -67,7 +70,7 @@ namespace Ocelot.ConfigEditorUnitTests.Editor.Controllers.EditorController
         [Fact]
         public void WhenRequestSiteJs_ReturnJsFile()
         {
-            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider);
+            var controller = new ConfigEditor.Editor.Controllers.EditorController(_config, _reload, _serviceProvider, _env);
 
             var fileStream = controller.ContentFile("site.min.js").FileStream;
             var css = string.Empty;

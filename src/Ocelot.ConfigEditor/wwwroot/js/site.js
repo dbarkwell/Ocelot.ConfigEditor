@@ -62,6 +62,10 @@
 }());
 
 $(document).ready(function() {
+    $("#sign-out").on("click", function() {
+        $("#sign-out-form").submit();    
+    });
+    
     $("#button-save").on("click",
         function(e) {
             $("#form-save").submit();

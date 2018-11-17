@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,14 +9,28 @@ namespace Ocelot.ConfigEditor.Security
     // ReSharper disable once InconsistentNaming
     public class AzureADAuthentication : Authentication
     {
-        public AzureADAuthentication(IConfiguration configuration) : base(configuration)
+        private const string Instance = "https://login.microsoftonline.com/";
+        
+        public AzureADAuthentication(IConfiguration configuration, IHostingEnvironment environment) : base(configuration, environment)
         {
+            SignOutSchemes = new[] { "Cookies", "AzureAD", "AzureADOpenID", "AzureADCookie" };
+            CallbackPath = "/signin-oidc";
         }
         
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => Configuration.Bind("Authentication:AzureAd", options));
+            services
+                .AddAuthentication(AzureADDefaults.AuthenticationScheme)
+                .AddCookie()
+                .AddAzureAD(
+                    options =>
+                    {
+                        options.Instance = Instance;
+                        options.ClientId = Configuration["OcelotConfigEditor:Authentication:AzureAd:ClientId"];
+                        options.Domain = Configuration["OcelotConfigEditor:Authentication:AzureAd:Domain"];
+                        options.TenantId = Configuration["OcelotConfigEditor:Authentication:AzureAd:TenantId"];
+                        options.CallbackPath = GetCallbackPath("OcelotConfigEditor:Authentication:AzureAd:CallbackPath", CallbackPath);
+                    });
         }
     }
 }
