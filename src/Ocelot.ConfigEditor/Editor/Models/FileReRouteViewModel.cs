@@ -9,7 +9,7 @@ namespace Ocelot.ConfigEditor.Editor.Models
     public class FileReRouteViewModel
     {
         public FileReRoute FileReRoute { get; set; }
-
+        
         public IEnumerable<SelectListItem> HttpMethodListItems => new List<SelectListItem>
                                                                       {
                                                                           new SelectListItem

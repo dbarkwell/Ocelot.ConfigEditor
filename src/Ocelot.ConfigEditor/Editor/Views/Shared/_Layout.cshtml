@@ -5,40 +5,55 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Ocelot Configuration Editor</title>
+    <title>Ocelot Configuration Editor</title>
 
     <environment names="Development,Staging,Production">
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "site.min.css" }, Context.Request.Scheme)"/>
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.eot" }, Context.Request.Scheme)" />
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.svg" }, Context.Request.Scheme)" />
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.ttf" }, Context.Request.Scheme)" />
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff" }, Context.Request.Scheme)" />
-        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new { id = "glyphicons-halflings-regular.woff2" }, Context.Request.Scheme)" />
+        <style type="text/css">
+            @@font-face {
+                font-family: 'Font Awesome 5 Free';
+                font-style: normal;
+                font-weight: 900;
+                src: url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.eot"}, Context.Request.Scheme)");
+                src: url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.eot"}, Context.Request.Scheme)?#iefix") format("embedded-opentype"), url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.woff2"}, Context.Request.Scheme)") format("woff2"), url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.woff"}, Context.Request.Scheme)") format("woff"), url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.ttf"}, Context.Request.Scheme)") format("truetype"), url("@Url.Action("ContentFile", "Editor", new {id = "fa-solid-900.svg"}, Context.Request.Scheme)#fontawesome") format("svg"); }
+
+            .fa,
+            .fas {
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900; }
+
+        </style>
+        <link rel="stylesheet" href="@Url.Action("ContentFile", "Editor", new {id = "site.min.css"}, Context.Request.Scheme)"/>
     </environment>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a asp-area="" asp-controller="Editor" asp-action="Index" class="navbar-brand">Ocelot Configuration Editor</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a asp-area="" asp-controller="Editor" asp-action="Index">Home</a>
+        <a asp-area="" asp-controller="Editor" asp-action="Index" class="navbar-brand">Ocelot Configuration Editor</a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#main-navbar">
+            <span class="navbar-toggler-icon">Toggle navigation</span>
+        </button>
+        <div id="main-navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Editor" asp-action="Index">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Download
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" asp-action="DownloadRoutes">Formatted</a>
+                        <a class="dropdown-item" asp-action="DownloadRoutes" asp-route-minified="true">Minified</a>
+                    </div>
                 </li>
             </ul>
             @if (User.Identity.IsAuthenticated)
             {
                 <form id="sign-out-form" asp-action="SignOut" method="post">
-                    <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" id="sign-out">Sign out</a></li>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" id="sign-out" href="#">Sign out</a>
+                        </li>
                     </ul>
                 </form>
             }
