@@ -34,3 +34,8 @@ ul {
 .nav-item > a {
   color: #ffffff;
 }
+
+div[data-notify="container"] {
+  width: 500px ! important;
+  top: 60px ! important;
+}
