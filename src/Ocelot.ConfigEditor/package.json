@@ -2,7 +2,7 @@
   "name": "Ocelot.ConfigEditor",
   "version": "1.0.0",
   "dependencies": {
-    "bootstrap": "4.0.0",
+    "bootstrap": "4.1.2",
     "bootstrap4-notify": "4.0.3",
     "@fortawesome/fontawesome-free": "5.6.3",
     "jquery": "3.3.1",
