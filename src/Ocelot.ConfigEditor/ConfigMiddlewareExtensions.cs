@@ -46,7 +46,7 @@ namespace Ocelot.ConfigEditor
             services.Configure<RazorViewEngineOptions>(
                 opt => { opt.ViewLocationExpanders.Add(new ViewLocationMapper()); });
 
-            services.AddScoped<IReloadService, ReloadService>();
+            services.AddScoped<IConfigurationService, ConfigurationService>();
             
             return services;
         }
@@ -69,7 +69,7 @@ namespace Ocelot.ConfigEditor
                 app.UseHsts();
             }
             
-            var reload = services.GetService<IReloadService>();
+            var reload = services.GetService<IConfigurationService>();
             reload.RemoveReloadFlag();
 
             var configPath = config["OcelotConfigEditor:Path"];  

@@ -3,9 +3,9 @@
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Ocelot.Configuration.File
 @using Ocelot.ConfigEditor
-@inject IReloadService ReloadService
+@inject IConfigurationService ConfigurationService
 
-@model FileConfiguration
+@model Ocelot.ConfigEditor.Editor.Models.IndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -14,16 +14,16 @@
 <div class="row">
     <div class="col-md-2 col-vertical-offset-2">
         <div class="row">
-            <a asp-action="CreateReRoute"><span class="glyphicon glyphicon-plus"></span> Create</a>
+            <a asp-action="CreateReRoute"><span class="fas fa-plus"></span> Create</a>
         </div>
         <div class="row">
-            <a asp-action="DownloadRoutes"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
+            <a data-toggle="modal" data-target="#upload-modal" href="#"><span class="fas fa-upload"></span> Upload</a>
         </div>
     </div>
     <div class="col-md-10">
         <h2>ReRoutes</h2>
         <ul>
-            @foreach (var route in Model.ReRoutes)
+            @foreach (var route in Model.FileConfiguration.ReRoutes)
             {
                 var toolTip = string.Empty;
                 for (var i = 1; i < route.DownstreamHostAndPorts.Count; i++)
@@ -37,7 +37,7 @@
                         </a>
                         @if (!string.IsNullOrEmpty(toolTip))
                         {
-                            <span class="glyphicon glyphicon-option-horizontal" data-toggle="tooltip" data-placement="right" data-html="true" title="@toolTip"></span>
+                            <span class="fas fa-ellipsis-h" data-toggle="tooltip" data-placement="right" data-html="true" title="@toolTip"></span>
                         }
                     </div>
                 </li>
@@ -46,22 +46,59 @@
     </div>
 </div>
 
+<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="upload-modal-title">Upload Configuration File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-config-form" method="post" enctype="multipart/form-data" asp-controller="Editor" asp-action="UploadRoutes">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <p>Upload an Ocelot configuration file:</p>
+                            <input type="file" name="configFile" accept=".json" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="upload-config-form" class="btn btn-primary">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts
 {
-    @if (await ReloadService.IsReloadRequired())
+    @if (ConfigurationService.IsReloadRequired())
     {
         <script type="text/javascript">
-            $.notify("There are pending configuration changes. Click to reload.", { className: "warn", autoHide: false });
-
-            $(document).on('click',
-                '.notifyjs-bootstrap-warn',
+            var defaults = configEditor.getNotifyDefaults();
+            defaults.type = "warning";
+            defaults.delay = 0;
+            defaults.allow_dismiss = false;
+            $.notify({ message: "There are pending configuration changes. Click to reload.", icon: "fas fa-sync" }, defaults);
+            $(document).on("click",
+                ".alert-warning",
                 function() {
                     $("#reload-form").submit();
                 });
-
-            $('[data-toggle="tooltip"]').tooltip();
         </script>
         <form id="reload-form" method="post" action="@Url.Action("Reload")"></form>
+    }
+
+    @if (Model.Error.HasError)
+    {
+        <script type="text/javascript">
+            var defaults = configEditor.getNotifyDefaults();
+            defaults.type = "danger";
+            defaults.delay = 10000;
+            $.notify({ message: "@Model.Error.ErrorMessage", icon: "fas fa-exclamation-circle" }, defaults);
+        </script>
     }
 }

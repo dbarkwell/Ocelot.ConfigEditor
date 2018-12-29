@@ -37,7 +37,7 @@ namespace TestSite
                 .ConfigureServices(s =>
                     {
                         s.AddOcelot();
-                        s.AddOcelotConfigEditor<AzureADAuthentication>();
+                        s.AddOcelotConfigEditor<GoogleAuthentication>();
                     })
                 .ConfigureLogging((hostingContext, logging) =>
                     {

@@ -17,13 +17,12 @@
     <Description>Configuration editor for Ocelot</Description>
     <RepositoryUrl>https://github.com/dbarkwell/Ocelot.ConfigEditor</RepositoryUrl>
     <PackageTags>Ocelot Config Editor</PackageTags>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
-    <Version>3.0.0</Version>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+    <Version>4.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.1.2" />
@@ -52,28 +51,63 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\site.min.css" />
-    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.eot" />
-    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.svg" />
-    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.woff" />
-    <Content Remove="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
     <Content Remove="wwwroot\js\site.min.js" />
+    <Content Remove="wwwroot\fonts\fa-solid-900.eot" />
+    <Content Remove="wwwroot\fonts\fa-solid-900.svg" />
+    <Content Remove="wwwroot\fonts\fa-solid-900.ttf" />
+    <Content Remove="wwwroot\fonts\fa-solid-900.woff" />
+    <Content Remove="wwwroot\fonts\fa-solid-900.woff2" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\css\site.min.css" />
-    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.eot" />
-    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.svg" />
-    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.ttf" />
-    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.woff" />
-    <EmbeddedResource Include="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
-    <EmbeddedResource Include="wwwroot\js\site.min.js" />
+      <EmbeddedResource Include="wwwroot\js\site.min.js" />
+      <EmbeddedResource Include="wwwroot\css\site.min.css" />
+      <EmbeddedResource Include="wwwroot\fonts\fa-solid-900.eot" />
+      <EmbeddedResource Include="wwwroot\fonts\fa-solid-900.woff2" />
+      <EmbeddedResource Include="wwwroot\fonts\fa-solid-900.svg" />
+      <EmbeddedResource Include="wwwroot\fonts\fa-solid-900.ttf" />
+      <EmbeddedResource Include="wwwroot\fonts\fa-solid-900.woff" />
+      <Content Remove="wwwroot\favicon.ico" />
+      <EmbeddedResource Include="wwwroot\favicon.ico">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\css" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Content Remove="package-lock.json" />
+    <None Include="package-lock.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="package.json" />
+    <None Include="package.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="appsettings.json" />
+    <None Include="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="appsettings.Development.json" />
+    <None Include="appsettings.Development.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="wwwroot\css\site.css" />
+    <None Include="wwwroot\css\site.css">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\site.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <Content Remove="Properties\launchSettings.json" />
+    <None Include="Properties\launchSettings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+    
   <Target Name="PrecompileRazorViews" AfterTargets="Build" DependsOnTargets="MvcRazorPrecompile" Condition="'$(TargetFramework)'!=''" />
 
   <Target Name="SetMvcRazorOutputPath">
@@ -91,5 +125,9 @@
       <_PrecompiledViewsOutput Include="$(MvcRazorOutputPath)$(MSBuildProjectName).PrecompiledViews.pdb" />
       <ContentWithTargetPath Include="@(_PrecompiledViewsOutput->'%(FullPath)')" RelativePath="%(_PrecompiledViewsOutput.Identity)" TargetPath="%(_PrecompiledViewsOutput.Filename)%(_PrecompiledViewsOutput.Extension)" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="Gulp" BeforeTargets="Build">
+    <Exec Command="node_modules\.bin\gulp.cmd" />
   </Target>
 </Project>

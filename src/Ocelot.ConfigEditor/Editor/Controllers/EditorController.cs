@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
 
 using Ocelot.ConfigEditor.Editor.Models;
 using Ocelot.Configuration.File;
-using Ocelot.Configuration.Repository;
 using Ocelot.Configuration.Validator;
 
 namespace Ocelot.ConfigEditor.Editor.Controllers
@@ -22,22 +25,17 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
     [Authorize]
     public class EditorController : Controller
     {
-        private readonly IFileConfigurationRepository _fileConfigRepo;
-
-        private readonly IReloadService _reload;
-
+        private const long MaxFileUploadSize = 1024 * 1024 * 28;
+        private readonly IConfigurationService _configuration;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly IHostingEnvironment _env;
         
         public EditorController(
-            IFileConfigurationRepository fileConfigurationRepository, 
-            IReloadService reload, 
+            IConfigurationService configuration, 
             IServiceProvider serviceProvider, 
             IHostingEnvironment env)
         {
-            _fileConfigRepo = fileConfigurationRepository;
-            _reload = reload;
+            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _env = env;
         }
@@ -76,11 +74,11 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
                 return View(model);
             }
 
-            var routes = await _fileConfigRepo.Get();
+            var routes = await _configuration.GetConfig();
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            await _fileConfigRepo.Set(routes.Data);
+            await _configuration.SetConfig(routes.Data);
 
-            await _reload.AddReloadFlag();
+            _configuration.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -90,15 +88,15 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [NamespaceConstraint]
         public async Task<IActionResult> DeleteReRoute(string id)
         {
-            var routes = await _fileConfigRepo.Get();
+            var routes = await _configuration.GetConfig();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("Index");
 
             routes.Data.ReRoutes.Remove(route);
-            await _fileConfigRepo.Set(routes.Data);
+            await _configuration.SetConfig(routes.Data);
 
-            await _reload.AddReloadFlag();
+            _configuration.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -106,7 +104,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [NamespaceConstraint]
         public async Task<IActionResult> EditReRoute(string id)
         {
-            var routes = await _fileConfigRepo.Get();
+            var routes = await _configuration.GetConfig();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("CreateReRoute");
@@ -131,42 +129,88 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
                 return View(model);
             }
 
-            var routes = await _fileConfigRepo.Get();
+            var routes = await _configuration.GetConfig();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route != null) 
                 routes.Data.ReRoutes.Remove(route);
 
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            var response = await _fileConfigRepo.Set(routes.Data);
+            await _configuration.SetConfig(routes.Data);
             
-            await _reload.AddReloadFlag();
+            _configuration.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
         
         [NamespaceConstraint]
-        public IActionResult DownloadRoutes()
+        public async Task<IActionResult> DownloadRoutes(bool minified = false)
         {
-            var provider = new PhysicalFileProvider(_env.ContentRootPath);
-            var fileInfo = provider.GetFileInfo("ocelot.json");
-            var readStream = fileInfo.CreateReadStream();
             const string mimeType = "application/text";
-            return File(readStream, mimeType, "ocelot.json");
+            var config = await _configuration.GetConfig();
+            var jsonFormatting = minified ? Formatting.None : Formatting.Indented;
+            var settings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore, ContractResolver = new IgnoreEmptyEnumerableResolver()};
+            var contents = JsonConvert.SerializeObject(config.Data, jsonFormatting, settings);
+            
+            return File(Encoding.UTF8.GetBytes(contents), mimeType, "ocelot.json");
+        }
+
+        [HttpGet]
+        [NamespaceConstraint]
+        public IActionResult UploadRoutes()
+        {
+            return RedirectToAction("Index");
+        }
+        
+        [HttpPost]
+        [NamespaceConstraint]
+        public async Task<IActionResult> UploadRoutes(IFormFile configFile)
+        {
+            try
+            {
+                var size = configFile.Length;
+                if (size > MaxFileUploadSize)
+                    throw new Exception("Config file is too large.");
+                
+                var serializer = new JsonSerializer();
+                
+                var filePath = Path.GetTempFileName();
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await configFile.CopyToAsync(stream);
+                    stream.Position = 0;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var jsonReader = new JsonTextReader(reader);
+                        var config = serializer.Deserialize<FileConfiguration>(jsonReader);
+                        if (config == null)
+                            throw new Exception("Config file is empty.");
+                        
+                        await _configuration.SetConfig(config);
+                    }
+                } 
+            }
+            catch (Exception e)
+            {
+                return View("Index", await GetIndexViewModel($"Unable to parse {configFile.FileName}. Please review and try again. {e.Message}"));
+            }
+            
+            await ReloadConfig();
+            
+            return RedirectToAction("Index");
         }
         
         [NamespaceConstraint]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(IndexViewModel model = null)
         {
-            var repo = await _fileConfigRepo.Get();
-            return View(repo.Data);
+            return View(await GetIndexViewModel());
         }
 
         [HttpPost]
         [NamespaceConstraint]
-        public IActionResult Reload()
+        public async Task<IActionResult> Reload()
         {
-            _reload.ReloadConfig();
+            await ReloadConfig();
 
             return RedirectToAction("Index");
         }
@@ -190,6 +234,11 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task ReloadConfig()
+        {
+            await _configuration.ReloadConfig();
         }
         
         private static string GetMimeType(string fileId)
@@ -218,5 +267,20 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             var validator = new ReRouteFluentValidator(null, hostAndPortValidator, fileQoSValidator);
             return validator.Validate(model.FileReRoute);
         }
+        
+        private async Task<IndexViewModel> GetIndexViewModel()
+        {
+            var repo = await _configuration.GetConfig();
+            var model = new IndexViewModel {FileConfiguration = repo.Data};
+            return model;
+        }
+        
+        private async Task<IndexViewModel> GetIndexViewModel(string errorMessage)
+        {
+            var model = await GetIndexViewModel();
+            model.Error.ErrorMessage = errorMessage;
+            return model;
+        }
+
     }
 }
