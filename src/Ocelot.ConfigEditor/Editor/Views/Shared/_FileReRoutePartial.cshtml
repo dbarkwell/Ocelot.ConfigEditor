@@ -47,7 +47,7 @@
                 <label class="required">Host and Port</label>
                 <span asp-validation-for="FileReRoute.DownstreamHostAndPorts" class="text-danger"></span>
                 <div class="form-group">
-                    <a href="#" id="button-hostport-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    <a href="#" id="button-hostport-add" class="btn btn-primary"><span class="fas fa-plus"></span> Add</a>
                 </div>
                 <div id="host-port" class="form-group">
                     @for (var i = 0; i < Model.FileReRoute.DownstreamHostAndPorts.Count; i++)
@@ -56,7 +56,7 @@
                             <input asp-for="FileReRoute.DownstreamHostAndPorts[i].Host" class="required"/>
                             <input asp-for="FileReRoute.DownstreamHostAndPorts[i].Port" class="required"/>
                             <a href="#" class="btn btn-xs btn-default textbox-remove">
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <span class="fas fa-trash"></span>
                             </a>
                         </div>
                     }
@@ -130,7 +130,7 @@
                 </div>
                 <label>Allowed Scopes</label>
                 <div class="form-group">
-                    <a href="#" id="button-allowedscope-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    <a href="#" id="button-allowedscope-add" class="btn btn-primary"><span class="fas fa-plus"></span> Add</a>
                 </div>
                 <div id="allowed-scope">
                     @for (var i = 0; i < Model.FileReRoute.AuthenticationOptions.AllowedScopes.Count; i++)
@@ -155,7 +155,7 @@
         <div id="panel-headers" class="panel-collapse collapse">
             <div class="panel-body">
                 <div class="form-group">
-                    <a href="#" id="button-headers-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    <a href="#" id="button-headers-add" class="btn btn-primary"><span class="fas fa-plus"></span> Add</a>
                 </div>
                 <div id="request-headers">
                     @foreach (var key in Model.FileReRoute.AddHeadersToRequest.Keys)
@@ -180,7 +180,7 @@
         <div id="panel-claims" class="panel-collapse collapse">
             <div class="panel-body">
                 <div class="form-group">
-                    <a href="#" id="button-claims-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    <a href="#" id="button-claims-add" class="btn btn-primary"><span class="fas fa-plus"></span> Add</a>
                 </div>
                 <div id="request-claims">
                     @foreach (var key in Model.FileReRoute.AddClaimsToRequest.Keys)
@@ -189,7 +189,7 @@
                             <input type="text" value="@key" class="claims-key"/>
                             <input asp-for="FileReRoute.AddClaimsToRequest[key]"/>
                             <a href="#" class="btn btn-xs btn-default textbox-remove">
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <span class="fas fa-remove"></span>
                             </a>
                         </div>
                     }
@@ -208,7 +208,7 @@
         <div id="panel-queries" class="panel-collapse collapse">
             <div class="panel-body">
                 <div class="form-group">
-                    <a href="#" id="button-queries-add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                    <a href="#" id="button-queries-add" class="btn btn-primary"><span class="fas fa-plus"></span> Add</a>
                 </div>
                 <div id="request-queries">
                     @foreach (var key in Model.FileReRoute.AddQueriesToRequest.Keys)
