@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
+    <PackageReference Include="Ocelot.Provider.Consul" Version="13.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Ocelot.ConfigEditor.PrecompiledViews, Version=5.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\src\Ocelot.ConfigEditor\obj\precompiled\netcoreapp2.1\Ocelot.ConfigEditor.PrecompiledViews.dll</HintPath>
     </Reference>
   </ItemGroup>

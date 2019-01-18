@@ -7,6 +7,7 @@ using Ocelot.ConfigEditor;
 using Ocelot.ConfigEditor.Security;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Consul;
 
 namespace TestSite
 {
@@ -37,6 +38,9 @@ namespace TestSite
                 .ConfigureServices(s =>
                     {
                         s.AddOcelot();
+                           // .AddConsul()
+                          // .AddConfigStoredInConsul(); 
+                        
                         s.AddOcelotConfigEditor<GoogleAuthentication>();
                     })
                 .ConfigureLogging((hostingContext, logging) =>

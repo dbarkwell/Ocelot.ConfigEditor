@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Ocelot.ConfigEditor.Security;
+using Ocelot.DependencyInjection;
 
 namespace Ocelot.ConfigEditor
 {
@@ -46,11 +47,11 @@ namespace Ocelot.ConfigEditor
             services.Configure<RazorViewEngineOptions>(
                 opt => { opt.ViewLocationExpanders.Add(new ViewLocationMapper()); });
 
-            services.AddScoped<IConfigurationService, ConfigurationService>();
+            services.AddScoped<IConfigEditorService, ConfigEditorService>();
             
             return services;
         }
-        
+
         public static IApplicationBuilder UseOcelotConfigEditor(
             this IApplicationBuilder app,
             ConfigEditorOptions configEditorOptions = null)
@@ -58,7 +59,7 @@ namespace Ocelot.ConfigEditor
             var services = app.ApplicationServices;
             var env = services.GetService<IHostingEnvironment>();
             var config = services.GetService<IConfiguration>();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -68,13 +69,10 @@ namespace Ocelot.ConfigEditor
                 app.UseExceptionHandler("/Editor/Error");
                 app.UseHsts();
             }
-            
-            var reload = services.GetService<IConfigurationService>();
-            reload.RemoveReloadFlag();
 
-            var configPath = config["OcelotConfigEditor:Path"];  
+            var configPath = config["OcelotConfigEditor:Path"];
             var pathMatch = configPath ?? (configEditorOptions?.Path ?? "cfgedt").Trim('/');
-            
+
             var authSettings = services.GetService<AuthorizeSettings>();
             if (authSettings.HasAuthentication)
             {
@@ -85,17 +83,24 @@ namespace Ocelot.ConfigEditor
                         appBuilder.UseAuthentication();
                     });
             }
-            
+
             app.UseMvc(
                 routes =>
-                    {
-                        routes.MapRoute(
-                            "ConfigEditor",
-                            $"{pathMatch}/{{controller=Editor}}/{{action=Index}}/{{id?}}",
-                            null,
-                            null,
-                            new { Namespace = "Ocelot.ConfigEditor.Editor.Controllers" });
-                    });
+                {
+                    routes.MapRoute(
+                        "ConfigEditor",
+                        $"{pathMatch}/{{controller=Editor}}/{{action=Index}}/{{id?}}",
+                        null,
+                        null,
+                        new {Namespace = "Ocelot.ConfigEditor.Editor.Controllers"});
+                });
+
+            var appLifetime = services.GetService<IApplicationLifetime>();
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                var configEditorService = services.GetService<IConfigEditorService>();
+                configEditorService.RemoveReloadFlag();
+            });
 
             return app;
         }

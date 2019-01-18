@@ -1,9 +1,5 @@
-﻿@using System.IO
-@using Microsoft.AspNetCore.Mvc.Razor
-@using Microsoft.AspNetCore.Mvc.ViewFeatures
-@using Ocelot.Configuration.File
-@using Ocelot.ConfigEditor
-@inject IConfigurationService ConfigurationService
+﻿@using Ocelot.ConfigEditor
+@inject IConfigEditorService ConfigEditorService
 
 @model Ocelot.ConfigEditor.Editor.Models.IndexViewModel
 
@@ -75,7 +71,7 @@
 
 @section Scripts
 {
-    @if (ConfigurationService.IsReloadRequired())
+    @if (ConfigEditorService.IsReloadRequired())
     {
         <script type="text/javascript">
             var defaults = configEditor.getNotifyDefaults();

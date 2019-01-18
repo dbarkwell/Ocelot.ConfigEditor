@@ -5,7 +5,7 @@ using Ocelot.Responses;
 
 namespace Ocelot.ConfigEditor
 {
-    public interface IConfigurationService
+    public interface IConfigEditorService
     {
         bool IsReloadRequired();
 
@@ -13,10 +13,10 @@ namespace Ocelot.ConfigEditor
         
         void RemoveReloadFlag();
         
-        Task ReloadConfig();
+        Task ReloadConfigAsync();
 
-        Task<Response<FileConfiguration>> GetConfig();
+        Task<Response<FileConfiguration>> GetConfigAsync();
 
-        Task SetConfig(FileConfiguration fileConfig);
+        Task SetConfigAsync(FileConfiguration fileConfig);
     }
 }

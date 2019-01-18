@@ -1,0 +1,10 @@
+{
+  "ReRoutes": [],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Host": "192.168.1.53",
+      "Port": 8500,
+      "ConfigurationKey": "OcelotGateway"
+    }
+  }
+}

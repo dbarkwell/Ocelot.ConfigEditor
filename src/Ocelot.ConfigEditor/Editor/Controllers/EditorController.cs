@@ -26,16 +26,16 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
     public class EditorController : Controller
     {
         private const long MaxFileUploadSize = 1024 * 1024 * 28;
-        private readonly IConfigurationService _configuration;
+        private readonly IConfigEditorService _configEditor;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHostingEnvironment _env;
         
         public EditorController(
-            IConfigurationService configuration, 
+            IConfigEditorService configEditor, 
             IServiceProvider serviceProvider, 
             IHostingEnvironment env)
         {
-            _configuration = configuration;
+            _configEditor = configEditor;
             _serviceProvider = serviceProvider;
             _env = env;
         }
@@ -74,11 +74,11 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
                 return View(model);
             }
 
-            var routes = await _configuration.GetConfig();
+            var routes = await _configEditor.GetConfigAsync();
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            await _configuration.SetConfig(routes.Data);
+            await _configEditor.SetConfigAsync(routes.Data);
 
-            _configuration.AddReloadFlag();
+            _configEditor.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -88,15 +88,15 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [NamespaceConstraint]
         public async Task<IActionResult> DeleteReRoute(string id)
         {
-            var routes = await _configuration.GetConfig();
+            var routes = await _configEditor.GetConfigAsync();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("Index");
 
             routes.Data.ReRoutes.Remove(route);
-            await _configuration.SetConfig(routes.Data);
+            await _configEditor.SetConfigAsync(routes.Data);
 
-            _configuration.AddReloadFlag();
+            _configEditor.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -104,7 +104,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         [NamespaceConstraint]
         public async Task<IActionResult> EditReRoute(string id)
         {
-            var routes = await _configuration.GetConfig();
+            var routes = await _configEditor.GetConfigAsync();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route == null) return RedirectToAction("CreateReRoute");
@@ -129,16 +129,16 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
                 return View(model);
             }
 
-            var routes = await _configuration.GetConfig();
+            var routes = await _configEditor.GetConfigAsync();
             var route = routes.Data.ReRoutes.FirstOrDefault(r => id == r.GetId());
 
             if (route != null) 
                 routes.Data.ReRoutes.Remove(route);
 
             routes.Data.ReRoutes.Add(model.FileReRoute);
-            await _configuration.SetConfig(routes.Data);
+            await _configEditor.SetConfigAsync(routes.Data);
             
-            _configuration.AddReloadFlag();
+            _configEditor.AddReloadFlag();
 
             return RedirectToAction("Index");
         }
@@ -147,7 +147,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         public async Task<IActionResult> DownloadRoutes(bool minified = false)
         {
             const string mimeType = "application/text";
-            var config = await _configuration.GetConfig();
+            var config = await _configEditor.GetConfigAsync();
             var jsonFormatting = minified ? Formatting.None : Formatting.Indented;
             var settings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore, ContractResolver = new IgnoreEmptyEnumerableResolver()};
             var contents = JsonConvert.SerializeObject(config.Data, jsonFormatting, settings);
@@ -186,7 +186,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
                         if (config == null)
                             throw new Exception("Config file is empty.");
                         
-                        await _configuration.SetConfig(config);
+                        await _configEditor.SetConfigAsync(config);
                     }
                 } 
             }
@@ -238,7 +238,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
 
         private async Task ReloadConfig()
         {
-            await _configuration.ReloadConfig();
+            await _configEditor.ReloadConfigAsync();
         }
         
         private static string GetMimeType(string fileId)
@@ -270,7 +270,7 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
         
         private async Task<IndexViewModel> GetIndexViewModel()
         {
-            var repo = await _configuration.GetConfig();
+            var repo = await _configEditor.GetConfigAsync();
             var model = new IndexViewModel {FileConfiguration = repo.Data};
             return model;
         }
@@ -282,5 +282,9 @@ namespace Ocelot.ConfigEditor.Editor.Controllers
             return model;
         }
 
+        private void ClearReload()
+        {
+            _configEditor.RemoveReloadFlag();
+        }
     }
 }
