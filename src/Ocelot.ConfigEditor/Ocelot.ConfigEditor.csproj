@@ -126,8 +126,4 @@
       <ContentWithTargetPath Include="@(_PrecompiledViewsOutput->'%(FullPath)')" RelativePath="%(_PrecompiledViewsOutput.Identity)" TargetPath="%(_PrecompiledViewsOutput.Filename)%(_PrecompiledViewsOutput.Extension)" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
   </Target>
-
-  <Target Name="Gulp" BeforeTargets="Build">
-    <Exec Command="node_modules\.bin\gulp.cmd" />
-  </Target>
 </Project>
