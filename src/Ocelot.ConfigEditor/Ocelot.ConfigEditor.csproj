@@ -17,9 +17,9 @@
     <Description>Configuration editor for Ocelot</Description>
     <RepositoryUrl>https://github.com/dbarkwell/Ocelot.ConfigEditor</RepositoryUrl>
     <PackageTags>Ocelot Config Editor</PackageTags>
-    <AssemblyVersion>5.0.1.0</AssemblyVersion>
-    <FileVersion>5.0.1.0</FileVersion>
-    <Version>5.0.1</Version>
+    <AssemblyVersion>5.0.2.0</AssemblyVersion>
+    <FileVersion>5.0.2.0</FileVersion>
+    <Version>5.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,7 +46,10 @@
 
  
   <ItemGroup>
-    <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true" Pack="true" PackagePath="lib\%(RecursiveDir)%(FileName)%(Extension)" />
+    <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true">
+      <Pack>true</Pack>
+      <PackagePath>lib\%(RecursiveDir)%(FileName)%(Extension)</PackagePath>
+    <Content>
   </ItemGroup>
 
   <ItemGroup>
