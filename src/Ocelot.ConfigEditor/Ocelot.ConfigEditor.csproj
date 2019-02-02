@@ -49,7 +49,7 @@
     <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true">
       <Pack>true</Pack>
       <PackagePath>lib\%(RecursiveDir)%(FileName)%(Extension)</PackagePath>
-    <Content>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
