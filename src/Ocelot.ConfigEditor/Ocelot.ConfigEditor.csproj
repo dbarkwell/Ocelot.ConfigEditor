@@ -17,9 +17,9 @@
     <Description>Configuration editor for Ocelot</Description>
     <RepositoryUrl>https://github.com/dbarkwell/Ocelot.ConfigEditor</RepositoryUrl>
     <PackageTags>Ocelot Config Editor</PackageTags>
-    <AssemblyVersion>5.0.2.0</AssemblyVersion>
-    <FileVersion>5.0.2.0</FileVersion>
-    <Version>5.0.2</Version>
+    <AssemblyVersion>5.0.3.0</AssemblyVersion>
+    <FileVersion>5.0.3.0</FileVersion>
+    <Version>5.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -108,9 +108,6 @@
     <None Include="Properties\launchSettings.json">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
-    <None Include="Editor\**\*">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </None>
   </ItemGroup>
     
   <Target Name="PrecompileRazorViews" AfterTargets="Build" DependsOnTargets="MvcRazorPrecompile" Condition="'$(TargetFramework)'!=''" />
@@ -122,7 +119,6 @@
   </Target>
   
   <Target Name="_MvcRazorPrecompileOnBuild" DependsOnTargets="SetMvcRazorOutputPath;MvcRazorPrecompile" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' " />
-  
   
   <Target Name="IncludePrecompiledViewsInPublishOutput" DependsOnTargets="_MvcRazorPrecompileOnBuild" BeforeTargets="PrepareForPublish" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
     <ItemGroup>
