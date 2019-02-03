@@ -12,6 +12,7 @@
     <AssemblyName>Ocelot.ConfigEditor</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl />
+    <IncludeContentInPack>false</IncludeContentInPack>
     <Authors>Dan Barkwell</Authors>
     <Owners>Dan Barkwell</Owners>
     <Description>Configuration editor for Ocelot</Description>
@@ -44,7 +45,6 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
 
- 
   <ItemGroup>
     <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true">
       <Pack>true</Pack>
@@ -52,12 +52,6 @@
     </Content>
   </ItemGroup>
 
-   <ItemGroup>
-    <Content Include="Editor\**\*" CopyToOutputDirectory="true">
-      <Pack>false</Pack>
-    </Content>
-  </ItemGroup>
-   
   <ItemGroup>
     <Content Remove="wwwroot\css\site.min.css" />
     <Content Remove="wwwroot\js\site.min.js" />
