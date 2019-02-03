@@ -46,12 +46,18 @@
 
  
   <ItemGroup>
-    <Content Include="obj\precompiled\**\*" Exclude="Editor/**/*.*" CopyToOutputDirectory="true">
+    <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true">
       <Pack>true</Pack>
       <PackagePath>lib\%(RecursiveDir)%(FileName)%(Extension)</PackagePath>
     </Content>
   </ItemGroup>
 
+   <ItemGroup>
+    <Content Include="Editor\**\*" CopyToOutputDirectory="true">
+      <Pack>false</Pack>
+    </Content>
+  </ItemGroup>
+   
   <ItemGroup>
     <Content Remove="wwwroot\css\site.min.css" />
     <Content Remove="wwwroot\js\site.min.js" />
