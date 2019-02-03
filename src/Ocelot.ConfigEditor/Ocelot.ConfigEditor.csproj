@@ -46,7 +46,7 @@
 
  
   <ItemGroup>
-    <Content Include="obj\precompiled\**\*" CopyToOutputDirectory="true">
+    <Content Include="obj\precompiled\**\*" Exclude="Editor/**/*.*" CopyToOutputDirectory="true">
       <Pack>true</Pack>
       <PackagePath>lib\%(RecursiveDir)%(FileName)%(Extension)</PackagePath>
     </Content>
