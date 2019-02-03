@@ -12,7 +12,6 @@
     <AssemblyName>Ocelot.ConfigEditor</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl />
-    <IncludeContentInPack>false</IncludeContentInPack>
     <Authors>Dan Barkwell</Authors>
     <Owners>Dan Barkwell</Owners>
     <Description>Configuration editor for Ocelot</Description>
@@ -107,6 +106,9 @@
     </None>
     <Content Remove="Properties\launchSettings.json" />
     <None Include="Properties\launchSettings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Include="Editor\**\*">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
