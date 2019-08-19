@@ -29,7 +29,7 @@ Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    NuGetRestore($"./{solutionName}.sln");
+    DotNetCoreRestore($"./{solutionName}.sln");
 });
 
 Task("Build")
