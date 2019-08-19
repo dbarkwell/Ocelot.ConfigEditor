@@ -10,6 +10,13 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 2.2.103
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - script: |
     npm install --prefix ./src/Ocelot.ConfigEditor
   displayName: 'npm install'
