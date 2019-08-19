@@ -17,13 +17,13 @@ steps:
     version: 2.2.103
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- script: |
-    npm install --prefix ./src/Ocelot.ConfigEditor
-  displayName: 'npm install'
-
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: 4.9.4
+
+- script: |
+    npm install --prefix ./src/Ocelot.ConfigEditor
+  displayName: 'npm install'
 
 - bash: |
     chmod +x build.sh
