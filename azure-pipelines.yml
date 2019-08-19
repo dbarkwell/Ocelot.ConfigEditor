@@ -17,10 +17,6 @@ steps:
     version: 2.2.103
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: 5.1.0
-
 - script: |
     npm install --prefix ./src/Ocelot.ConfigEditor
   displayName: 'npm install'
