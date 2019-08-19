@@ -1,8 +1,3 @@
-# Node.js with gulp
-# Build a Node.js project using the gulp task runner.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - master
 
@@ -16,7 +11,11 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
-    npm install gulp
-    gulp default --gulpfile gulpfile.js
-  displayName: 'npm install and run gulp'
+    npm install --prefix ./src/Ocelot.ConfigEditor
+  displayName: 'npm install'
+
+- task: Cake@0
+  inputs:
+    script: 'build.cake'
+    target: 'Default'
+    verbosity: 'Verbose'
