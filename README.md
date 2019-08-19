@@ -1,13 +1,67 @@
 # Ocelot.ConfigEditor
-A configuration editor for Ocelot (https://github.com/TomPallister/Ocelot)
+A configuration editor for Ocelot (https://github.com/TomPallister/Ocelot).
 
 [![Build Status](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_apis/build/status/Ocelot.ConfigEditor-ASP.NET%20Core-CI?branchName=master)](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_build/latest?definitionId=12?branchName=master)
+
+
+## How To
+
+1. Add the Ocelot.ConfigEditor nuget package to an Ocelot application
+1. Add the Ocelot.ConfigEditor service with: AddOcelotConfigEditor
+
+Examples:
+
+```
+.ConfigureServices(s =>
+{
+    s.AddOcelot();
+    s.AddOcelotConfigEditor();
+})
+```
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddOcelot();
+    services.AddOcelotConfigEditor();
+}
+```
+
+3. Add the Ocelot.ConfigEditor middleware with: UseOcelotConfigEditor
+
+Examples:
+
+```
+.Configure(app => 
+{
+    app.UseOcelotConfigEditor();
+    app.UseOcelot().Wait();
+}
+```
+```
+public void Configure(IApplicationBuilder app)
+{
+    app.UseOcelotConfigEditor();
+    app.UseOcelot().Wait();
+}
+```
+
+4. Build the project
+5. The default route is cfgedt. This can be changed by passing in ConfigEditorOptions
+
+Example:
+
+```
+app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" }); 
+```
+
+6. The default authorization is localhost. See below for different authorization types.
+
 
 ## Authorization
 There are two ways to authorize access to the config editor. The authorization types are:
 
 1. Localhost (default)
-2. Authenticating against a third party identity service. Currently, AzureAD, Google, and Open Id Connect are configured.
+1. Authenticating against a third party identity service. Currently, AzureAD, Google, and Open Id Connect are configured.
   
 ### Enable Azure AD Authentication
 1. Sign into Azure Portal
