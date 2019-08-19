@@ -35,11 +35,3 @@ steps:
     ./build.sh
   failOnStderr: true
   displayName: 'run cake build'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(System.DefaultWorkingDirectory)/artifacts/*.nupkg;!$(System.DefaultWorkingDirectory)/artifacts/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'Nuget ConfigEditor'
-
