@@ -1,4 +1,15 @@
-#addin "Cake.Gulp"
+// Install modules
+#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
+
+// Install addins.
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Gulp&version=0.12.0"
+
+// Install tools.
+#tool "nuget:https://api.nuget.org/v3/index.json?package=nuget.commandline&version=4.9.2"
+
+// Load other scripts.
+#load "./build/parameters.cake"
+
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
@@ -23,6 +34,13 @@ Task("Clean")
     .Does(() =>
 {
     CleanDirectory(buildDir);
+    
+    var settings = new DotNetCoreCleanSettings
+    {
+        Configuration = configuration
+    };
+    
+    DotNetCoreClean($"./{solutionName}.sln", settings);
 });
 
 Task("Restore-NuGet-Packages")
@@ -37,18 +55,12 @@ Task("Build")
     .IsDependentOn("Gulp")
     .Does(() =>
 {
-    if(IsRunningOnWindows())
+    var settings = new DotNetCoreBuildSettings
     {
-      // Use MSBuild
-      MSBuild($"./{solutionName}.sln", settings =>
-        settings.SetConfiguration(configuration));
-    }
-    else
-    {
-      // Use XBuild
-      XBuild($"./{solutionName}.sln", settings =>
-        settings.SetConfiguration(configuration));
-    }
+        NoRestore = true
+    };
+    
+    DotNetCoreBuild($"./{solutionName}.sln", settings);
 });
 
 Task("Gulp")
