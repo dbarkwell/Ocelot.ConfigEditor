@@ -36,3 +36,10 @@ steps:
   failOnStderr: true
   displayName: 'run cake build'
 
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Pipeline.Workspace)/artifacts/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'Nuget ConfigEditor'
+
