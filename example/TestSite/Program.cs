@@ -41,7 +41,8 @@ namespace TestSite
                            // .AddConsul()
                           // .AddConfigStoredInConsul(); 
                         
-                        s.AddOcelotConfigEditor<GoogleAuthentication>();
+                        //s.AddOcelotConfigEditor<GoogleAuthentication>();
+                        s.AddOcelotConfigEditor();
                     })
                 .ConfigureLogging((hostingContext, logging) =>
                     {
@@ -50,7 +51,7 @@ namespace TestSite
                 .UseIISIntegration()
                 .Configure(app =>
                     {
-                        app.UseOcelotConfigEditor();
+                        app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" });
                         app.UseOcelot().Wait();
                     })
                 .Build()

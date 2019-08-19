@@ -17,9 +17,9 @@
     <Description>Configuration editor for Ocelot</Description>
     <RepositoryUrl>https://github.com/dbarkwell/Ocelot.ConfigEditor</RepositoryUrl>
     <PackageTags>Ocelot Config Editor</PackageTags>
-    <AssemblyVersion>5.0.3.0</AssemblyVersion>
-    <FileVersion>5.0.3.0</FileVersion>
-    <Version>5.0.3</Version>
+    <AssemblyVersion>5.0.4.0</AssemblyVersion>
+    <FileVersion>5.0.4.0</FileVersion>
+    <Version>5.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
