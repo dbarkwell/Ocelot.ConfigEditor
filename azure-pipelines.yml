@@ -30,9 +30,8 @@ steps:
     npm install --prefix ./src/Ocelot.ConfigEditor
   displayName: 'npm install'
 
-- bash: |
-    chmod +x build.sh
-    ./build.sh
+- pwsh: |
+    ./build.ps1
   failOnStderr: true
   displayName: 'run cake build'
 
