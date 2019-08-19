@@ -14,8 +14,8 @@ steps:
     npm install --prefix ./src/Ocelot.ConfigEditor
   displayName: 'npm install'
 
-- task: CmdLine@2
-  inputs:
-    script: './build.sh'
-    failOnStderr: true
+- pwsh: |
+    ./build.ps1
+  failOnStderr: true
+  displayName: 'run cake build'
 
