@@ -17,13 +17,13 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionName = "Ocelot.ConfigEditor";
-
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
 //////////////////////////////////////////////////////////////////////
 
-// Define directories.
+var solutionName = "Ocelot.ConfigEditor";
+var solutionPath = $"./{solutionName}.sln";
+var projectPath = $"./src/{solutionName}/{solutionName}.csproj";
 var buildDir = Directory($"./src/{solutionName}/bin") + Directory(configuration);
 
 //////////////////////////////////////////////////////////////////////
@@ -32,53 +32,69 @@ var buildDir = Directory($"./src/{solutionName}/bin") + Directory(configuration)
 
 Task("Clean")
     .Does(() =>
-{
-    CleanDirectory(buildDir);
-    
-    var settings = new DotNetCoreCleanSettings
     {
-        Configuration = configuration
-    };
-    
-    DotNetCoreClean($"./{solutionName}.sln", settings);
-});
+        CleanDirectory(buildDir);
+        
+        var settings = new DotNetCoreCleanSettings
+        {
+            Configuration = configuration
+        };
+        
+        DotNetCoreClean(solutionPath, settings);
+    });
 
-Task("Restore-NuGet-Packages")
+Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
-{
-    DotNetCoreRestore($"./{solutionName}.sln");
-});
-
-Task("Build")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .IsDependentOn("Gulp")
-    .Does(() =>
-{
-    var settings = new DotNetCoreBuildSettings
     {
-        NoRestore = true
-    };
-    
-    DotNetCoreBuild($"./{solutionName}.sln", settings);
-});
+        DotNetCoreRestore(solutionPath);
+    });
 
 Task("Gulp")
     .Does(() =>
-{
-    Gulp.Local.Execute(settings => 
     {
-        settings.WithGulpFile($"./src/{solutionName}/gulpfile.js");
-        settings.SetPathToGulpJs($"./src/{solutionName}/node_modules/gulp/bin/gulp.js");
+        Gulp.Local.Execute(settings => 
+        {
+            settings.WithGulpFile($"./src/{solutionName}/gulpfile.js");
+            settings.SetPathToGulpJs($"./src/{solutionName}/node_modules/gulp/bin/gulp.js");
+        });
     });
-});
 
+Task("Build")
+    .IsDependentOn("Restore")
+    .IsDependentOn("Gulp")
+    .Does(() =>
+    {
+        var settings = new DotNetCoreBuildSettings
+        {
+            NoRestore = true,
+            Configuration = configuration
+        };
+        
+        DotNetCoreBuild(solutionPath, settings);
+    });
+    
+Task("Pack")
+    .IsDependentOn("Build")
+    .Does(() => 
+    {
+        var settings = new DotNetCorePackSettings
+         {
+             Configuration = configuration,
+             OutputDirectory = "./artifacts/",
+             NoBuild = true,
+             NoRestore = true
+         };
+        
+         DotNetCorePack(projectPath, settings);
+    });
+    
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Build");
+    .IsDependentOn("Pack");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
