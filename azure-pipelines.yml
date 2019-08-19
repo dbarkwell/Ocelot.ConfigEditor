@@ -39,7 +39,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Pipeline.Workspace)/artifacts/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
+    packagesToPush: '$(System.DefaultWorkingDirectory)/artifacts/*.nupkg;!$(System.DefaultWorkingDirectory)/artifacts/*.symbols.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'Nuget ConfigEditor'
 
