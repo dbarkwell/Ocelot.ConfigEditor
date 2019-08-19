@@ -60,7 +60,7 @@ app.UseOcelotConfigEditor(new ConfigEditorOptions { Path = "edit" });
 ## Authorization
 There are two ways to authorize access to the config editor. The authorization types are:
 
-1. Localhost (default)
+1. Localhost (default). The configuration page is only accessible from localhost.
 1. Authenticating against a third party identity service. Currently, AzureAD, Google, and Open Id Connect are configured.
   
 ### Enable Azure AD Authentication
