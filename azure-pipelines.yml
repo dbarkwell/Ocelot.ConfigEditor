@@ -21,6 +21,10 @@ steps:
     npm install --prefix ./src/Ocelot.ConfigEditor
   displayName: 'npm install'
 
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: 4.9.4
+
 - bash: |
     chmod +x build.sh
     ./build.sh
