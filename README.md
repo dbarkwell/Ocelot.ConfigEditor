@@ -1,8 +1,7 @@
 # Ocelot.ConfigEditor
 A configuration editor for Ocelot (https://github.com/TomPallister/Ocelot).
 
-[![Build Status](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_apis/build/status/Ocelot.ConfigEditor-ASP.NET%20Core-CI?branchName=master)](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_build/latest?definitionId=12?branchName=master)
-
+[![Build Status](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_apis/build/status/dbarkwell.Ocelot.ConfigEditor?branchName=master)](https://dev.azure.com/pelism/Ocelot.ConfigEditor/_build/latest?definitionId=13&branchName=master)
 
 ## How To
 
